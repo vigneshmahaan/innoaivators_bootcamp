@@ -54,7 +54,7 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
             <h3 className="text-sm font-mono text-gray-500 uppercase tracking-widest mb-8 border-b border-[#222] pb-4">[ TOPICS COVERED ]</h3>
             <div className="space-y-8">
               {bootcamp.topics_covered.split(/(?=Day \d+)/).filter(Boolean).map((section: string, idx: number) => {
-                const parts = section.split(/ - (.*)/s);
+                const parts = section.split(/ - ([\s\S]*)/);
                 const title = parts[0].trim();
                 const content = parts[1]?.trim();
                 
