@@ -136,6 +136,20 @@ export async function updateRegistrationPaymentStatus(id: string, status: string
   }
 }
 
+export async function deleteBatch(id: string) {
+  const cookieStore = await cookies();
+  if (!cookieStore.has('admin_auth')) throw new Error('Unauthorized');
+
+  const { supabase } = await import('@/lib/supabase');
+  const { error } = await supabase
+    .from('batches')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw new Error('Failed to delete batch');
+  revalidatePath('/admin/batches');
+}
+
 export async function createBatch(bootcampId: string, name: string) {
   const cookieStore = await cookies();
   if (!cookieStore.has('admin_auth')) throw new Error('Unauthorized');
@@ -299,14 +313,22 @@ export async function autoAssignBatches(bootcampId: string) {
   if (!batches || batches.length === 0) throw new Error('No batches found for this course. Create batches first.');
 
   // Get all unassigned VERIFIED registrations for this course
-  const { data: unassigned } = await supabase
+  // We check for both null and empty string to be safe
+  const { data: unassigned, error: fetchError } = await supabase
     .from('registrations')
     .select('id')
     .eq('bootcamp_id', bootcampId)
     .eq('payment_status', 'verified')
-    .is('batch_id', null);
+    .or('batch_id.is.null,batch_id.eq.""');
+
+  if (fetchError) {
+    console.error('Error fetching unassigned registrations:', fetchError);
+    throw new Error('Failed to fetch students for distribution');
+  }
 
   if (!unassigned || unassigned.length === 0) return { count: 0 };
+
+  console.log(`Auto-distributing ${unassigned.length} students across ${batches.length} batches for bootcamp ${bootcampId}`);
 
   // Round-robin assign
   const updates = unassigned.map((reg, index) => ({
@@ -320,8 +342,16 @@ export async function autoAssignBatches(bootcampId: string) {
       .from('registrations')
       .update({ batch_id: update.batch_id })
       .eq('id', update.id);
-    if (!error) assignedCount++;
+    
+    if (error) {
+      console.error(`Failed to assign student ${update.id} to batch ${update.batch_id}:`, error);
+    } else {
+      assignedCount++;
+    }
   }
 
+  console.log(`Successfully assigned ${assignedCount}/${unassigned.length} students`);
+  
+  revalidatePath('/admin/batches');
   return { count: assignedCount };
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { createBatch, assignBatch, triggerMeetingLinkEmail, autoAssignBatches } from '../actions';
+import { createBatch, assignBatch, deleteBatch, triggerMeetingLinkEmail, autoAssignBatches } from '../actions';
 
 export default function BatchesPage() {
   const [bootcamps, setBootcamps] = useState<any[]>([]);
@@ -34,7 +34,7 @@ export default function BatchesPage() {
       setRegistrations(regsRes.data || []);
       
       if (bootcampsRes.data && bootcampsRes.data.length > 0) {
-        setSelectedBootcampId(bootcampsRes.data[0].id);
+        setSelectedBootcampId(prev => prev || (bootcampsRes.data[0]?.id || ''));
       }
 
       // Initialize inputs
@@ -60,6 +60,16 @@ export default function BatchesPage() {
       await fetchData(); // Refresh
     } catch (err) {
       alert('Failed to create batch');
+    }
+  };
+
+  const handleDeleteBatch = async (batchId: string, batchName: string) => {
+    if (!confirm(`Are you sure you want to delete "${batchName}"? All assigned students will be unassigned.`)) return;
+    try {
+      await deleteBatch(batchId);
+      await fetchData();
+    } catch (err) {
+      alert('Failed to delete batch');
     }
   };
 
@@ -104,8 +114,8 @@ export default function BatchesPage() {
     setAutoAssigning(true);
     try {
       const res = await autoAssignBatches(selectedBootcampId);
-      alert(`Done! Successfully assigned ${res.count} verified students to batches.`);
       await fetchData();
+      alert(`Done! Successfully assigned ${res.count} verified students to batches.`);
     } catch (err: any) {
       alert(err.message || 'Failed to auto-assign batches');
     } finally {
@@ -120,118 +130,155 @@ export default function BatchesPage() {
   const verifiedUnassignedCount = currentRegs.filter(r => r.payment_status === 'verified' && !r.batch_id).length;
 
   return (
-    <div className="p-6 md:p-12 max-w-[1600px] mx-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
+    <div className="p-6 md:p-12 max-w-[1600px] mx-auto space-y-12">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#222] pb-12">
         <div>
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">Batch Manager</h1>
-          <p className="text-gray-500 font-mono text-sm uppercase tracking-widest">[ SEPARATE AND COMMUNICATE ]</p>
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-3 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">
+            Batch Manager
+          </h1>
+          <p className="text-gray-500 font-mono text-xs uppercase tracking-[0.3em] flex items-center gap-2">
+            <span className="w-8 h-[1px] bg-primary"></span>
+            SEPARATE AND COMMUNICATE
+          </p>
         </div>
 
-        {/* Course Selector - Moved to Top */}
-        <div className="bg-[#0a0a0a] border border-[#333] p-4 flex items-center gap-4 flex-1 max-w-xl">
-          <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 shrink-0">COURSE CONTEXT:</label>
-          <select 
-            value={selectedBootcampId}
-            onChange={(e) => setSelectedBootcampId(e.target.value)}
-            className="bg-transparent border-none p-0 text-white font-bold uppercase tracking-wider focus:outline-none flex-1 truncate cursor-pointer"
-          >
-            {bootcamps.map(b => (
-              <option key={b.id} value={b.id} className="bg-black text-white">{b.title}</option>
-            ))}
-          </select>
+        {/* Course Selector - Redesigned with overlay pattern for perfect truncation */}
+        <div className="bg-[#0a0a0a] border border-[#333] p-1 pr-4 flex items-center gap-4 w-full lg:max-w-2xl group hover:border-primary/50 transition-colors relative">
+          <div className="bg-[#111] px-4 py-3 border-r border-[#333] shrink-0">
+            <label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Course Context</label>
+          </div>
+          
+          <div className="flex-1 min-w-0 relative py-2">
+            <div className="text-white font-bold uppercase tracking-wider text-[11px] truncate pr-4">
+              {bootcamps.find(b => b.id === selectedBootcampId)?.title || 'Select Course'}
+            </div>
+            <select 
+              value={selectedBootcampId}
+              onChange={(e) => setSelectedBootcampId(e.target.value)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            >
+              {bootcamps.map(b => (
+                <option key={b.id} value={b.id} className="bg-black text-white">{b.title}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="text-gray-600 group-hover:text-primary transition-colors shrink-0">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+          </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-8 border-b border-[#333]">
+      <div className="flex gap-8 border-b border-[#222]">
         <button 
           onClick={() => setActiveTab('assign')}
-          className={`py-4 px-6 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'assign' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
+          className={`pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'assign' ? 'text-primary' : 'text-gray-500 hover:text-gray-300'}`}
         >
-          1. Assign Students
+          01. Assign Students
+          {activeTab === 'assign' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>}
         </button>
         <button 
           onClick={() => setActiveTab('links')}
-          className={`py-4 px-6 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'links' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
+          className={`pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'links' ? 'text-primary' : 'text-gray-500 hover:text-gray-300'}`}
         >
-          2. Send Meeting Links
+          02. Communication Hub
+          {activeTab === 'links' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>}
         </button>
       </div>
 
 
       {activeTab === 'assign' && (
-        <div className="space-y-8">
-          <div className="bg-[#111] border border-[#333] p-6 rounded-xl">
-            <h3 className="text-xl font-bold uppercase mb-4 tracking-wider">Create New Batch</h3>
-            <form onSubmit={handleCreateBatch} className="flex gap-4">
-              <input 
-                type="text" 
-                required
-                value={newBatchName}
-                onChange={e => setNewBatchName(e.target.value)}
-                placeholder="e.g. Morning Squad (Batch A)" 
-                className="bg-black border border-[#333] p-3 flex-1 focus:outline-none focus:border-primary transition-colors text-white"
-              />
-              <button type="submit" className="bg-white text-black px-8 font-bold uppercase text-sm tracking-widest hover:bg-gray-200 transition-colors">
-                Create
-              </button>
-            </form>
-          </div>
-
-          {/* Auto-Distribute Banner */}
-          <div className="bg-[#0a0a0a] border border-dashed border-[#444] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-              <h4 className="font-bold uppercase tracking-widest text-white">Auto-Distribute Verified Students</h4>
-              <p className="text-xs text-gray-500 mt-1 font-mono">
-                {verifiedUnassignedCount} verified & unassigned • will be split evenly across {currentBatches.length} batch(es)
-              </p>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+          <div className="xl:col-span-4 space-y-6">
+            <div className="bg-[#0a0a0a] border border-[#222] p-8 rounded-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors"></div>
+              <h3 className="text-sm font-black uppercase mb-6 tracking-[0.2em] text-gray-400">Initialize Batch</h3>
+              <form onSubmit={handleCreateBatch} className="space-y-4 relative z-10">
+                <input 
+                  type="text" 
+                  required
+                  value={newBatchName}
+                  onChange={e => setNewBatchName(e.target.value)}
+                  placeholder="e.g. MORNING SQUAD (BATCH A)" 
+                  className="w-full bg-[#111] border border-[#333] p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-primary transition-all placeholder:text-gray-700"
+                />
+                <button type="submit" className="w-full bg-white text-black py-4 font-black uppercase text-[10px] tracking-[0.3em] hover:bg-primary hover:text-white transition-all shadow-xl">
+                  Deploy Batch
+                </button>
+              </form>
             </div>
-            <button
-              onClick={handleAutoAssign}
-              disabled={autoAssigning}
-              className="shrink-0 bg-white text-black px-8 py-3 font-bold uppercase text-sm tracking-widest hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-wait"
-            >
-              {autoAssigning ? 'Distributing...' : '⚡ Auto-Distribute'}
-            </button>
+
+            {/* Auto-Distribute Banner - Redesigned */}
+            <div className="bg-gradient-to-br from-[#111] to-[#0a0a0a] border border-[#333] p-8 rounded-2xl relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Smart Distribution</h4>
+                </div>
+                <p className="text-[10px] text-gray-500 font-mono uppercase leading-relaxed mb-6">
+                  {verifiedUnassignedCount} verified students detected.<br/>
+                  Ready for split across {currentBatches.length} batch(es).
+                </p>
+                <button
+                  onClick={handleAutoAssign}
+                  disabled={autoAssigning}
+                  className="w-full border border-primary/30 bg-primary/5 text-primary py-4 font-black uppercase text-[10px] tracking-[0.3em] hover:bg-primary hover:text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {autoAssigning ? 'PROCESSING...' : '⚡ TRIGGER AUTO-DISTRIBUTION'}
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-[#111] border border-[#333] rounded-xl overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#0a0a0a] border-b border-[#333] text-xs uppercase tracking-widest text-gray-400">
-                  <th className="p-4 font-bold">Student</th>
-                  <th className="p-4 font-bold">Status</th>
-                  <th className="p-4 font-bold">Assign to Batch</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#222]">
-                {currentRegs.map(reg => (
-                  <tr key={reg.id} className="hover:bg-[#151515]">
-                    <td className="p-4">
-                      <div className="font-bold text-white">{reg.users?.name}</div>
-                      <div className="text-xs text-gray-500 font-mono">{reg.users?.email}</div>
-                    </td>
-                    <td className="p-4">
-                      <span className={`text-[10px] px-2 py-1 uppercase tracking-widest font-bold border ${
-                        reg.payment_status === 'verified' ? 'text-green-500 border-green-900/50 bg-green-950/30' : 'text-gray-400 border-[#333]'
-                      }`}>
-                        {reg.payment_status}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <select 
-                        value={reg.batch_id || ''}
-                        onChange={(e) => handleAssignBatch(reg.id, e.target.value)}
-                        className="bg-black border border-[#333] p-2 text-white text-sm focus:outline-none focus:border-primary transition-colors"
-                      >
-                        <option value="">-- Unassigned --</option>
-                        {currentBatches.map(b => (
-                          <option key={b.id} value={b.id}>{b.name}</option>
-                        ))}
-                      </select>
-                    </td>
+          <div className="xl:col-span-8">
+            <div className="bg-[#0a0a0a] border border-[#222] rounded-2xl overflow-hidden shadow-2xl">
+              <div className="p-6 border-b border-[#222] flex items-center justify-between bg-[#111]/50">
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Registry List</h3>
+                <span className="text-[9px] font-mono text-gray-600">{currentRegs.length} RECORDS FOUND</span>
+              </div>
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-[#222] text-[9px] uppercase tracking-[0.3em] text-gray-500">
+                    <th className="p-6 font-black">Student Profile</th>
+                    <th className="p-6 font-black">Authentication</th>
+                    <th className="p-6 font-black">Assignment Control</th>
                   </tr>
-                ))}
+                </thead>
+                <tbody className="divide-y divide-[#111]">
+                  {currentRegs.map(reg => (
+                    <tr key={reg.id} className="hover:bg-[#111]/30 transition-colors group">
+                      <td className="p-6">
+                        <div className="font-black text-white text-xs uppercase tracking-tight group-hover:text-primary transition-colors">{reg.users?.name}</div>
+                        <div className="text-[10px] text-gray-500 font-mono mt-1">{reg.users?.email}</div>
+                      </td>
+                      <td className="p-6">
+                        <span className={`text-[8px] px-2 py-1 uppercase tracking-widest font-black border ${
+                          reg.payment_status === 'verified' ? 'text-green-500 border-green-500/20 bg-green-500/5' : 'text-gray-600 border-[#222]'
+                        }`}>
+                          {reg.payment_status}
+                        </span>
+                      </td>
+                      <td className="p-6">
+                        <div className="relative max-w-[200px]">
+                          <select 
+                            value={reg.batch_id || ''}
+                            onChange={(e) => handleAssignBatch(reg.id, e.target.value)}
+                            className="w-full bg-[#111] border border-[#333] p-3 text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+                          >
+                            <option value="">-- UNASSIGNED --</option>
+                            {currentBatches.map(b => (
+                              <option key={b.id} value={b.id}>{b.name}</option>
+                            ))}
+                          </select>
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-600">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 {currentRegs.length === 0 && (
                   <tr>
                     <td colSpan={3} className="p-8 text-center text-gray-500 font-mono uppercase">No students found for this course</td>
@@ -241,7 +288,8 @@ export default function BatchesPage() {
             </table>
           </div>
         </div>
-      )}
+      </div>
+    )}
 
       {activeTab === 'links' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -250,14 +298,23 @@ export default function BatchesPage() {
             const verifiedCount = batchRegs.filter(r => r.payment_status === 'verified').length;
 
             return (
-              <div key={batch.id} className="bg-[#111] border border-[#333] p-6 rounded-xl">
-                <div className="flex justify-between items-start mb-6 border-b border-[#222] pb-4">
+              <div key={batch.id} className="bg-[#0a0a0a] border border-[#222] p-8 rounded-2xl relative overflow-hidden group hover:border-primary/30 transition-all">
+                <div className="flex justify-between items-start mb-8 border-b border-[#111] pb-6">
                   <div>
-                    <h3 className="text-2xl font-bold uppercase tracking-wider text-white">{batch.name}</h3>
-                    <p className="text-xs font-mono text-gray-500 mt-1">
-                      {batchRegs.length} Total Students ({verifiedCount} Verified)
+                    <h3 className="text-xl font-black uppercase tracking-wider text-white group-hover:text-primary transition-colors">{batch.name}</h3>
+                    <p className="text-[10px] font-mono text-gray-500 mt-2 uppercase tracking-widest">
+                      {batchRegs.length} TOTAL • {verifiedCount} VERIFIED RECORDS
                     </p>
                   </div>
+                  <button 
+                    onClick={() => handleDeleteBatch(batch.id, batch.name)}
+                    className="p-2 text-gray-600 hover:text-red-500 hover:bg-red-500/5 rounded transition-all group/btn"
+                    title="Delete Batch"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
                 </div>
 
                 <div className="space-y-4">
