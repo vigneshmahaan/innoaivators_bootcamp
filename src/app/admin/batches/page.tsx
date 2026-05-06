@@ -95,16 +95,16 @@ export default function BatchesPage() {
       alert('Please create at least one batch first before auto-distributing.');
       return;
     }
-    const unassignedCount = currentRegs.filter(r => !r.batch_id).length;
+    const unassignedCount = verifiedUnassignedCount;
     if (unassignedCount === 0) {
-      alert('All students are already assigned to a batch!');
+      alert('All verified students are already assigned to a batch!');
       return;
     }
-    if (!confirm(`Auto-distribute ${unassignedCount} unassigned students across ${currentBatches.length} batches?`)) return;
+    if (!confirm(`Auto-distribute ${unassignedCount} verified students across ${currentBatches.length} batches?`)) return;
     setAutoAssigning(true);
     try {
       const res = await autoAssignBatches(selectedBootcampId);
-      alert(`Done! Successfully assigned ${res.count} students to batches.`);
+      alert(`Done! Successfully assigned ${res.count} verified students to batches.`);
       await fetchData();
     } catch (err: any) {
       alert(err.message || 'Failed to auto-assign batches');
@@ -117,12 +117,29 @@ export default function BatchesPage() {
 
   const currentBatches = batches.filter(b => b.bootcamp_id === selectedBootcampId);
   const currentRegs = registrations.filter(r => r.bootcamp_id === selectedBootcampId);
+  const verifiedUnassignedCount = currentRegs.filter(r => r.payment_status === 'verified' && !r.batch_id).length;
 
   return (
     <div className="p-6 md:p-12 max-w-[1600px] mx-auto">
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">Batch Manager</h1>
-        <p className="text-gray-500 font-mono text-sm uppercase tracking-widest">[ SEPARATE AND COMMUNICATE ]</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
+        <div>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">Batch Manager</h1>
+          <p className="text-gray-500 font-mono text-sm uppercase tracking-widest">[ SEPARATE AND COMMUNICATE ]</p>
+        </div>
+
+        {/* Course Selector - Moved to Top */}
+        <div className="bg-[#0a0a0a] border border-[#333] p-4 flex items-center gap-4 flex-1 max-w-xl">
+          <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 shrink-0">COURSE CONTEXT:</label>
+          <select 
+            value={selectedBootcampId}
+            onChange={(e) => setSelectedBootcampId(e.target.value)}
+            className="bg-transparent border-none p-0 text-white font-bold uppercase tracking-wider focus:outline-none flex-1 truncate cursor-pointer"
+          >
+            {bootcamps.map(b => (
+              <option key={b.id} value={b.id} className="bg-black text-white">{b.title}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -141,19 +158,6 @@ export default function BatchesPage() {
         </button>
       </div>
 
-      {/* Course Selector */}
-      <div className="bg-[#0a0a0a] border border-[#333] p-6 mb-8 flex items-center gap-6">
-        <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Select Course Context:</label>
-        <select 
-          value={selectedBootcampId}
-          onChange={(e) => setSelectedBootcampId(e.target.value)}
-          className="bg-[#111] border border-[#222] p-3 text-white focus:outline-none focus:border-primary transition-colors flex-1 max-w-md"
-        >
-          {bootcamps.map(b => (
-            <option key={b.id} value={b.id}>{b.title}</option>
-          ))}
-        </select>
-      </div>
 
       {activeTab === 'assign' && (
         <div className="space-y-8">
@@ -177,9 +181,9 @@ export default function BatchesPage() {
           {/* Auto-Distribute Banner */}
           <div className="bg-[#0a0a0a] border border-dashed border-[#444] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
-              <h4 className="font-bold uppercase tracking-widest text-white">Auto-Distribute Unassigned Students</h4>
+              <h4 className="font-bold uppercase tracking-widest text-white">Auto-Distribute Verified Students</h4>
               <p className="text-xs text-gray-500 mt-1 font-mono">
-                {currentRegs.filter(r => !r.batch_id).length} unassigned • will be split evenly across {currentBatches.length} batch(es)
+                {verifiedUnassignedCount} verified & unassigned • will be split evenly across {currentBatches.length} batch(es)
               </p>
             </div>
             <button

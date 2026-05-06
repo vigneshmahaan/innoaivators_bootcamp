@@ -298,11 +298,12 @@ export async function autoAssignBatches(bootcampId: string) {
 
   if (!batches || batches.length === 0) throw new Error('No batches found for this course. Create batches first.');
 
-  // Get all unassigned registrations for this course
+  // Get all unassigned VERIFIED registrations for this course
   const { data: unassigned } = await supabase
     .from('registrations')
     .select('id')
     .eq('bootcamp_id', bootcampId)
+    .eq('payment_status', 'verified')
     .is('batch_id', null);
 
   if (!unassigned || unassigned.length === 0) return { count: 0 };
