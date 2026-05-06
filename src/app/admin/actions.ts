@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function loginAdmin(formData: FormData) {
   const password = formData.get('password') as string;
@@ -45,6 +46,9 @@ export async function deleteBootcamp(id: string) {
     console.error('Error deleting bootcamp:', error);
     throw new Error('Failed to delete bootcamp');
   }
+
+  revalidatePath('/');
+  revalidatePath('/admin');
 }
 
 export async function createBootcamp(formData: FormData) {
@@ -89,6 +93,8 @@ export async function createBootcamp(formData: FormData) {
     return { error: 'Failed to create bootcamp' };
   }
 
+  revalidatePath('/');
+  revalidatePath('/admin');
   redirect('/admin');
 }
 
