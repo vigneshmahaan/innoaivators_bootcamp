@@ -36,26 +36,40 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
 
         <div className="bg-[#0a0a0a] border border-[#333] p-8 md:p-12 mb-8 relative group">
           <div className="absolute inset-0 bg-gradient-to-br from-burgundy/5 to-navy/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <h2 className="text-xl uppercase tracking-wider mb-4 font-bold text-gray-300">Overview</h2>
-          <p className="text-lg text-gray-400 leading-relaxed relative z-10">
+          <div className="flex justify-between items-start mb-4 relative z-10">
+            <h2 className="text-xl uppercase tracking-wider font-bold text-gray-300">Overview</h2>
+            {bootcamp.duration_days && (
+              <span className="bg-white/10 text-white border border-white/20 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
+                {bootcamp.duration_days} Days
+              </span>
+            )}
+          </div>
+          <p className="text-lg text-gray-400 leading-relaxed relative z-10 text-justify">
             {bootcamp.description}
           </p>
         </div>
 
-        {(bootcamp.duration_days || bootcamp.topics_covered) && (
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
-            {bootcamp.duration_days && (
-              <div className="bg-[#0a0a0a] border border-[#333] p-8 relative group">
-                <h3 className="text-sm font-mono text-gray-500 uppercase tracking-widest mb-2">[ DURATION ]</h3>
-                <p className="text-3xl font-black uppercase tracking-tighter text-white">{bootcamp.duration_days} DAYS</p>
-              </div>
-            )}
-            {bootcamp.topics_covered && (
-              <div className="bg-[#0a0a0a] border border-[#333] p-8 relative group">
-                <h3 className="text-sm font-mono text-gray-500 uppercase tracking-widest mb-2">[ TOPICS COVERED ]</h3>
-                <p className="text-lg text-gray-300 font-medium leading-relaxed">{bootcamp.topics_covered}</p>
-              </div>
-            )}
+        {bootcamp.topics_covered && (
+          <div className="bg-[#0a0a0a] border border-[#333] p-8 md:p-12 mb-8 relative group">
+            <h3 className="text-sm font-mono text-gray-500 uppercase tracking-widest mb-8 border-b border-[#222] pb-4">[ TOPICS COVERED ]</h3>
+            <div className="space-y-8">
+              {bootcamp.topics_covered.split(/(?=Day \d+)/).filter(Boolean).map((section: string, idx: number) => {
+                const parts = section.split(/ - (.*)/s);
+                const title = parts[0].trim();
+                const content = parts[1]?.trim();
+                
+                return (
+                  <div key={idx} className="relative z-10">
+                    <h4 className="text-white font-bold text-lg mb-2 uppercase tracking-tight">{title}</h4>
+                    {content && (
+                      <p className="text-gray-400 leading-relaxed text-justify font-normal">
+                        {content}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
