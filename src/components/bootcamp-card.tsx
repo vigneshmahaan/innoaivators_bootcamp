@@ -14,14 +14,22 @@ export function BootcampCard({ id, title, description, price }: BootcampCardProp
       <div className="relative z-10 flex flex-col h-full">
         <h3 className="text-xl font-bold uppercase tracking-wider mb-2 text-white group-hover:text-white transition-colors">{title}</h3>
         <p className="text-gray-400 mb-8 text-sm line-clamp-3">{description}</p>
-        <div className="flex items-center justify-between mt-auto">
+        <div className="flex flex-col gap-4 mt-auto">
           <span className="text-white font-mono text-lg">₹{price.toLocaleString('en-IN')}</span>
-          <Link
-            href={`/bootcamp/${id}`}
-            className="px-6 py-2 bg-transparent border border-white text-white hover:bg-white hover:text-black transition-colors uppercase text-xs font-bold tracking-widest"
-          >
-            Details
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/bootcamp/${id}`}
+              className="flex-1 text-center px-4 py-2 bg-transparent border border-white text-white hover:bg-white/10 transition-colors uppercase text-[10px] font-bold tracking-widest"
+            >
+              Details
+            </Link>
+            <Link
+              href={`/register?bootcampId=${id}`}
+              className="flex-1 text-center px-4 py-2 bg-white border border-white text-black hover:bg-gray-200 transition-colors uppercase text-[10px] font-bold tracking-widest"
+            >
+              Register
+            </Link>
+          </div>
         </div>
       </div>
     </div>
