@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { COUNTRIES, INDIAN_STATES, TAMIL_NADU_DISTRICTS, ACADEMIC_DATA, YEARS_OF_STUDY } from '@/lib/constants';
 
 interface RegistrationFormProps {
   bootcampId: string;
@@ -219,20 +220,55 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                 <input required type="tel" className={`${baseInputClass} flex-1 min-w-0`} value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} placeholder="Phone number" />
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className={labelClass}>District <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} placeholder="e.g. Salem" />
-              </div>
-              <div>
-                <label className={labelClass}>State <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.state} onChange={e => setFormData({ ...formData, state: e.target.value })} placeholder="e.g. Tamil Nadu" />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={labelClass}>Country <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.country} onChange={e => setFormData({ ...formData, country: e.target.value })} placeholder="e.g. India" />
+                <select 
+                  required 
+                  className={inputClass} 
+                  value={formData.country} 
+                  onChange={e => setFormData({ ...formData, country: e.target.value, state: '', district: '' })}
+                >
+                  <option value="">Select Country</option>
+                  {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
               </div>
+
+              {formData.country === 'India' && (
+                <div>
+                  <label className={labelClass}>State <span className="text-red-500 ml-1">*</span></label>
+                  <select 
+                    required 
+                    className={inputClass} 
+                    value={formData.state} 
+                    onChange={e => setFormData({ ...formData, state: e.target.value, district: '' })}
+                  >
+                    <option value="">Select State</option>
+                    {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              )}
             </div>
+
+            {formData.state === 'Tamil Nadu' ? (
+              <div>
+                <label className={labelClass}>District <span className="text-red-500 ml-1">*</span></label>
+                <select 
+                  required 
+                  className={inputClass} 
+                  value={formData.district} 
+                  onChange={e => setFormData({ ...formData, district: e.target.value })}
+                >
+                  <option value="">Select District</option>
+                  {TAMIL_NADU_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              </div>
+            ) : formData.state ? (
+              <div>
+                <label className={labelClass}>District <span className="text-red-500 ml-1">*</span></label>
+                <input required type="text" className={inputClass} value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} placeholder="Enter your district" />
+              </div>
+            ) : null}
           </div>
         )}
 
@@ -245,29 +281,62 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
               <input required type="text" className={inputClass} value={formData.institutionName} onChange={e => setFormData({ ...formData, institutionName: e.target.value })} placeholder="Name of your college" />
             </div>
 
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={labelClass}>Field of Study <span className="text-red-500 ml-1">*</span></label>
-                <select required className={inputClass} value={formData.fieldOfStudy} onChange={e => setFormData({ ...formData, fieldOfStudy: e.target.value })}>
+                <select 
+                  required 
+                  className={inputClass} 
+                  value={formData.fieldOfStudy} 
+                  onChange={e => setFormData({ ...formData, fieldOfStudy: e.target.value, educationDetails: '', department: '' })}
+                >
                   <option value="">Select Field</option>
-                  <option value="Arts">Arts</option>
-                  <option value="Science">Science</option>
-                  <option value="Engineering">Engineering</option>
-                  <option value="Other">Other</option>
+                  {Object.keys(ACADEMIC_DATA).map(f => <option key={f} value={f}>{f}</option>)}
                 </select>
               </div>
-              <div>
-                <label className={labelClass}>Degree / Course <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.educationDetails} onChange={e => setFormData({ ...formData, educationDetails: e.target.value })} placeholder="e.g., B.Tech, B.Sc" />
-              </div>
+
+              {formData.fieldOfStudy && (
+                <div>
+                  <label className={labelClass}>Degree / Course <span className="text-red-500 ml-1">*</span></label>
+                  <select 
+                    required 
+                    className={inputClass} 
+                    value={formData.educationDetails} 
+                    onChange={e => setFormData({ ...formData, educationDetails: e.target.value, department: '' })}
+                  >
+                    <option value="">Select Degree</option>
+                    {(ACADEMIC_DATA as any)[formData.fieldOfStudy].degrees.map((d: string) => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {formData.fieldOfStudy && (
               <div>
                 <label className={labelClass}>Department / Branch <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} placeholder="e.g., Computer Science, Mechanical" />
+                <select 
+                  required 
+                  className={inputClass} 
+                  value={formData.department} 
+                  onChange={e => setFormData({ ...formData, department: e.target.value })}
+                >
+                  <option value="">Select Department</option>
+                  {(ACADEMIC_DATA as any)[formData.fieldOfStudy].departments.map((d: string) => <option key={d} value={d}>{d}</option>)}
+                </select>
               </div>
-              <div>
-                <label className={labelClass}>Year of Study <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.yearOfStudy} onChange={e => setFormData({ ...formData, yearOfStudy: e.target.value })} placeholder="e.g., 2nd Year, Final Year" />
-              </div>
+            )}
+
+            <div>
+              <label className={labelClass}>Year of Study <span className="text-red-500 ml-1">*</span></label>
+              <select 
+                required 
+                className={inputClass} 
+                value={formData.yearOfStudy} 
+                onChange={e => setFormData({ ...formData, yearOfStudy: e.target.value })}
+              >
+                <option value="">Select Year</option>
+                {YEARS_OF_STUDY.map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
             </div>
           </div>
         )}
