@@ -74,7 +74,5 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
         </div>
       </div>
     </div>
-      </div>
-    </div>
   );
 }
