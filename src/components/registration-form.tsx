@@ -249,17 +249,17 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                   <div className="text-black text-center">
                     <div className="font-black text-xs mb-2 uppercase tracking-tighter">Scan to Pay</div>
                     <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=7010396731@superyes%26pn=InnoAivators%20Tech%26am=${price}%26cu=INR`}
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=7010396731@superyes%26pn=InnoAivators%20Tech%26mc=0000%26tn=Bootcamp%20Registration%26am=${price}.00%26cu=INR`}
                       alt="UPI QR Code"
                       className="w-32 h-32 mx-auto"
                     />
-                    <div className="font-mono text-[10px] mt-2 font-bold opacity-50 uppercase">UPI ID: vigneshmahaan@okaxis</div>
+                    <div className="font-mono text-[10px] mt-2 font-bold opacity-50 uppercase">UPI ID: 7010396731@superyes</div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <a
-                    href={`upi://pay?pa=7010396731@superyes&pn=InnoAivators%20Tech&am=${price}&cu=INR`}
+                    href={`upi://pay?pa=7010396731@superyes&pn=InnoAivators%20Tech&mc=0000&tn=Bootcamp%20Registration&am=${price}.00&cu=INR`}
                     className="flex items-center justify-center gap-3 w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-sm"
                   >
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" className="h-4" />
