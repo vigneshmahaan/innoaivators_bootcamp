@@ -18,7 +18,7 @@ export default async function Home() {
         {/* Hero Section */}
         <section className="relative pt-20 pb-12 px-6 overflow-hidden flex flex-col items-center justify-center text-center min-h-[70vh] md:min-h-[calc(100vh-6rem)]">
           <div className="max-w-5xl mx-auto relative z-10 space-y-6">
-            <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9]">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9]">
               INNOVATE.<br />CREATE.<br />
               <span className="text-gray-500">ELEVATE.</span>
             </h1>

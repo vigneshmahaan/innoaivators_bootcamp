@@ -50,33 +50,47 @@ export function Navbar() {
       </div>
 
       {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 z-[90] bg-black/95 backdrop-blur-2xl md:hidden transition-all duration-500 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-        <div className="flex flex-col items-center justify-center h-full gap-12 text-center p-6">
+      <div className={`fixed inset-0 z-[150] bg-black md:hidden transition-all duration-500 flex flex-col items-center justify-center ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+        {/* Close Button in Overlay */}
+        <button 
+          onClick={toggleMenu}
+          className="absolute top-8 right-8 p-2 text-white"
+        >
+          <div className="w-6 h-6 relative">
+            <span className="absolute top-1/2 left-0 w-full h-0.5 bg-white rotate-45"></span>
+            <span className="absolute top-1/2 left-0 w-full h-0.5 bg-white -rotate-45"></span>
+          </div>
+        </button>
+
+        <div className="flex flex-col items-center gap-8 text-center p-6 w-full max-w-xs">
           <a 
             href="/#about" 
             onClick={toggleMenu}
-            className="text-3xl font-black uppercase tracking-tighter text-white hover:text-gray-400 transition-colors"
+            className="text-4xl font-black uppercase tracking-tighter text-white hover:text-gray-400 transition-colors"
           >
             About Us
           </a>
           <a 
             href="/#bootcamps" 
             onClick={toggleMenu}
-            className="text-3xl font-black uppercase tracking-tighter text-white hover:text-gray-400 transition-colors"
+            className="text-4xl font-black uppercase tracking-tighter text-white hover:text-gray-400 transition-colors"
           >
             Our Courses
           </a>
-          <Link 
-            href="/#bootcamps" 
-            onClick={toggleMenu}
-            className="px-12 py-5 bg-white text-black font-black uppercase tracking-widest text-sm hover:bg-gray-200 transition-all rounded-full"
-          >
-            Register Now
-          </Link>
           
-          <div className="mt-12 pt-12 border-t border-white/10 w-full flex flex-col items-center gap-4">
-             <p className="text-gray-500 font-mono text-[10px] uppercase tracking-[0.3em]">Connect With Us</p>
-             <a href="mailto:hello.innoaivators@gmail.com" className="text-white font-bold text-sm tracking-widest uppercase">hello.innoaivators@gmail.com</a>
+          <div className="pt-8 w-full">
+            <Link 
+              href="/#bootcamps" 
+              onClick={toggleMenu}
+              className="block w-full py-4 bg-white text-black font-black uppercase tracking-[0.2em] text-[11px] hover:bg-gray-200 transition-all rounded-full"
+            >
+              Register Now
+            </Link>
+          </div>
+          
+          <div className="mt-12 pt-12 border-t border-white/10 w-full space-y-4">
+             <p className="text-gray-600 font-mono text-[9px] uppercase tracking-[0.4em]">Connect With Us</p>
+             <a href="mailto:hello.innoaivators@gmail.com" className="text-white font-bold text-[11px] tracking-widest uppercase block truncate">hello.innoaivators@gmail.com</a>
           </div>
         </div>
       </div>
