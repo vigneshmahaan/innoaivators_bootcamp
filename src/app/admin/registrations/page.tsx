@@ -260,7 +260,7 @@ export default function RegistrationsPage() {
                     <select 
                       value={reg.payment_status}
                       onChange={(e) => handleUpdateStatus(reg.id, e.target.value)}
-                      className={`text-xs font-bold uppercase tracking-widest px-3 py-1 border rounded ${
+                      className={`text-xs font-bold uppercase tracking-widest px-3 py-1 border rounded w-full ${
                         reg.payment_status === 'verified' ? 'bg-green-950/30 text-green-500 border-green-900/50' : 
                         reg.payment_status === 'failed' ? 'bg-red-950/30 text-red-500 border-red-900/50' : 
                         'bg-yellow-950/30 text-yellow-500 border-yellow-900/50'
@@ -270,10 +270,18 @@ export default function RegistrationsPage() {
                       <option className="bg-[#111] text-green-500" value="verified">Verified</option>
                       <option className="bg-[#111] text-red-500" value="failed">Failed</option>
                     </select>
-                    {reg.payment_proof_url && reg.payment_proof_url !== 'pending-upload' && (
-                      <div className="mt-2">
-                        <a href={reg.payment_proof_url} target="_blank" rel="noreferrer" className="text-[10px] text-blue-400 hover:text-blue-300 hover:underline uppercase tracking-widest">
-                          View Proof ↗
+                    
+                    {reg.payment_proof_url && reg.payment_proof_url.startsWith('http') && (
+                      <div className="mt-4 p-2 bg-[#111] border border-[#222] rounded-lg group/proof">
+                        <a href={reg.payment_proof_url} target="_blank" rel="noreferrer" className="block relative aspect-video overflow-hidden rounded bg-black">
+                          <img 
+                            src={reg.payment_proof_url} 
+                            alt="Payment Proof" 
+                            className="w-full h-full object-cover group-hover/proof:scale-110 transition-transform duration-500" 
+                          />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-white">Full View ↗</span>
+                          </div>
                         </a>
                       </div>
                     )}
