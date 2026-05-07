@@ -81,11 +81,17 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
         const fileName = `${Math.random()}-${Date.now()}.${fileExt}`;
         const filePath = `proofs/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
           .from('payment-proofs')
           .upload(filePath, paymentFile);
 
-        if (uploadError) throw new Error('Failed to upload screenshot. Please try again.');
+        if (uploadError) {
+          console.error('Upload error detail:', uploadError);
+          if (uploadError.message.includes('bucket not found')) {
+            throw new Error('Storage Error: The "payment-proofs" bucket was not found. Please contact the administrator.');
+          }
+          throw new Error(`Failed to upload screenshot: ${uploadError.message}`);
+        }
 
         const { data: { publicUrl } } = supabase.storage
           .from('payment-proofs')
