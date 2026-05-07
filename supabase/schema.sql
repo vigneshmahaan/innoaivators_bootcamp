@@ -10,6 +10,7 @@ CREATE TABLE bootcamps (
     duration_days INTEGER,
     topics_covered TEXT,
     final_task TEXT,
+    whatsapp_link TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

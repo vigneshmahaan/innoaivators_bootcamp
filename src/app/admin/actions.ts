@@ -347,14 +347,15 @@ export async function autoAssignBatches(bootcampId: string) {
 
   if (!batches || batches.length === 0) throw new Error('No batches found for this course. Create batches first.');
 
+  if (!bootcampId) throw new Error('Bootcamp ID is required');
+
   // Get all unassigned VERIFIED registrations for this course
-  // We check for both null and empty string to be safe
   const { data: unassigned, error: fetchError } = await supabase
     .from('registrations')
     .select('id')
     .eq('bootcamp_id', bootcampId)
     .eq('payment_status', 'verified')
-    .or('batch_id.is.null,batch_id.eq.""');
+    .is('batch_id', null);
 
   if (fetchError) {
     console.error('Error fetching unassigned registrations:', fetchError);
