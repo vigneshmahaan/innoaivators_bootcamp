@@ -125,7 +125,7 @@ export async function sendFailedEmail(toEmail: string, userName: string, courseN
   }
 }
 
-export async function sendPaymentSuccessEmail(toEmail: string, userName: string, courseName: string, whatsappLink: string) {
+export async function sendPaymentSuccessEmail(toEmail: string, userName: string, courseName: string, batchName: string, whatsappLink: string) {
   const mailOptions = {
     from: `"INNOAIVATORS TECH SOLUTION" <${process.env.EMAIL_USER}>`,
     to: toEmail,
@@ -136,6 +136,12 @@ export async function sendPaymentSuccessEmail(toEmail: string, userName: string,
         <h3 style="text-align: center; color: #27ae60;">Payment Successfully Received!</h3>
         <p>Dear <strong>${userName}</strong>,</p>
         <p>Great news! We have received your payment for the <strong>${courseName}</strong> bootcamp.</p>
+        
+        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px; text-align: center; font-size: 16px; margin: 20px 0; border: 1px dashed #ccc;">
+          You have been assigned to: <br/>
+          <strong style="font-size: 20px; color: #0056b3;">${batchName}</strong>
+        </div>
+
         <p>Your registration is now confirmed. To get started and stay updated, please join our official WhatsApp group for this batch:</p>
         
         <div style="text-align: center; margin: 30px 0;">

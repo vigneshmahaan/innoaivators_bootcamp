@@ -143,32 +143,6 @@ export async function updateRegistrationPaymentStatus(id: string, status: string
     console.error('Error updating registration status:', error);
     throw new Error('Failed to update registration status');
   }
-
-  // Send email if verified
-  if (status === 'verified') {
-    const { sendPaymentSuccessEmail } = await import('@/lib/email');
-    // Use the link from the bootcamp table, fallback to a general one if not set
-    const whatsappLink = reg.bootcamps.whatsapp_link || "https://chat.whatsapp.com/INNOAIVATORS_GENERAL_LINK"; 
-    
-    try {
-      await sendPaymentSuccessEmail(
-        reg.users.email, 
-        reg.users.name, 
-        reg.bootcamps.title, 
-        whatsappLink
-      );
-      
-      // LOGIC: Add to WhatsApp Group
-      // This requires a WhatsApp Business API or third-party service like Twilio.
-      // Placeholder for actual API call:
-      console.log(`[WHATSAPP] Adding ${reg.users.phone} to Group via Link: ${whatsappLink}`);
-      
-      // Update that email was sent
-      await supabase.from('registrations').update({ verified_email_sent: true }).eq('id', id);
-    } catch (err) {
-      console.error('Failed to send success email/notification:', err);
-    }
-  }
 }
 
 export async function deleteBatch(id: string) {
@@ -267,15 +241,15 @@ export async function bulkSendStatusEmails(bootcampId?: string) {
   if (!cookieStore.has('admin_auth')) throw new Error('Unauthorized');
 
   const { supabase } = await import('@/lib/supabase');
-  const { sendVerificationEmail, sendFailedEmail } = await import('@/lib/email');
+  const { sendPaymentSuccessEmail, sendFailedEmail } = await import('@/lib/email');
 
   let verifiedCount = 0;
   let failedCount = 0;
 
-  // --- Send Verified Emails ---
+  // --- Send Verified Emails (The Daily Work Phase) ---
   const verifiedQuery = supabase
     .from('registrations')
-    .select('id, users(name, email), bootcamps(title), batches(name)')
+    .select('id, bootcamp_id, batch_id, users(name, email), bootcamps(title, whatsapp_link), batches(name)')
     .eq('payment_status', 'verified')
     .eq('verified_email_sent', false);
 
@@ -287,16 +261,36 @@ export async function bulkSendStatusEmails(bootcampId?: string) {
     const reg = _reg as any;
     if (reg.users?.email) {
       try {
-        await sendVerificationEmail(
+        let batchName = reg.batches?.name;
+        
+        // AUTO-BATCHING if not assigned
+        if (!batchName) {
+           const { data: batches } = await supabase
+            .from('batches')
+            .select('id, name')
+            .eq('bootcamp_id', reg.bootcamp_id)
+            .order('created_at', { ascending: true });
+            
+           if (batches && batches.length > 0) {
+             await supabase.from('registrations').update({ batch_id: batches[0].id }).eq('id', reg.id);
+             batchName = batches[0].name;
+           } else {
+             batchName = "Your assigned batch";
+           }
+        }
+
+        await sendPaymentSuccessEmail(
           reg.users.email,
           reg.users.name,
           reg.bootcamps?.title || 'Course',
-          reg.batches?.name || 'Your assigned batch'
+          batchName,
+          reg.bootcamps?.whatsapp_link || "https://chat.whatsapp.com/INNOAIVATORS_GENERAL_LINK"
         );
+        
         await supabase.from('registrations').update({ verified_email_sent: true }).eq('id', reg.id);
         verifiedCount++;
       } catch (err) {
-        console.error(`Failed to send verified email to ${reg.users.email}`);
+        console.error(`Failed to send success email to ${reg.users.email}`, err);
       }
     }
   }
