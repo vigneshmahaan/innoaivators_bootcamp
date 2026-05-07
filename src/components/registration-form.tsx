@@ -42,6 +42,17 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      
+      // 100KB Limit Check
+      if (file.size > 100 * 1024) {
+        setError('Image size must be under 100KB. Please compress your screenshot.');
+        setPaymentFile(null);
+        setPaymentPreview(null);
+        e.target.value = ''; // Reset input
+        return;
+      }
+
+      setError('');
       setPaymentFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -335,7 +346,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-bold text-white mb-1 uppercase tracking-wider">Tap to Select Screenshot</p>
-                      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">Supports: JPG, PNG (Max 5MB)</p>
+                      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest text-red-500 font-bold">Max Size: 100KB</p>
                     </div>
                   </>
                 )}
