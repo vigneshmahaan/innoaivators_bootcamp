@@ -9,6 +9,7 @@ export default function RegistrationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sendingEmails, setSendingEmails] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   // Filters
   const [filterType, setFilterType] = useState('ALL');
@@ -272,17 +273,17 @@ export default function RegistrationsPage() {
                     </select>
                     
                     {reg.payment_proof_url && reg.payment_proof_url.startsWith('http') && (
-                      <div className="mt-4 p-2 bg-[#111] border border-[#222] rounded-lg group/proof">
-                        <a href={reg.payment_proof_url} target="_blank" rel="noreferrer" className="block relative aspect-video overflow-hidden rounded bg-black">
+                      <div className="mt-4">
+                        <button 
+                          onClick={() => setSelectedImage(reg.payment_proof_url)}
+                          className="block w-16 h-16 bg-[#111] border border-[#222] rounded overflow-hidden hover:border-accent transition-all group/proof"
+                        >
                           <img 
                             src={reg.payment_proof_url} 
                             alt="Payment Proof" 
                             className="w-full h-full object-cover group-hover/proof:scale-110 transition-transform duration-500" 
                           />
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white">Full View ↗</span>
-                          </div>
-                        </a>
+                        </button>
                       </div>
                     )}
                   </td>
@@ -298,6 +299,25 @@ export default function RegistrationsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-sm flex items-center justify-center p-8 animate-in fade-in duration-300"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button className="absolute top-8 right-8 text-white p-2 hover:bg-white/10 rounded-full">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+          <div className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center" onClick={e => e.stopPropagation()}>
+            <img 
+              src={selectedImage} 
+              alt="Payment Proof Full" 
+              className="max-w-full max-h-full object-contain shadow-2xl border border-white/10 shadow-white/5" 
+            />
+          </div>
         </div>
       )}
     </div>
