@@ -24,54 +24,35 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
         <Link href="/" className="text-gray-400 hover:text-white mb-8 inline-block uppercase text-xs tracking-widest font-mono">
           ← Back to Bootcamps
         </Link>
-        
+
         <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">
           {bootcamp.title}
         </h1>
-        
-        <div className="flex items-center gap-4 mb-12">
-          <span className="bg-white text-black px-3 py-1 font-mono text-sm font-bold">Premium</span>
-          <span className="text-accent font-mono text-xl">₹{bootcamp.price.toLocaleString('en-IN')}</span>
+
+        <div className="flex flex-wrap items-center gap-6 mb-12">
+          <div className="flex items-center gap-4">
+            <span className="bg-white text-black px-3 py-1 font-mono text-sm font-bold">Premium</span>
+            <span className="text-accent font-mono text-xl">₹{bootcamp.price.toLocaleString('en-IN')}</span>
+          </div>
+          {bootcamp.duration_days && (
+            <div className="flex items-center gap-2 text-gray-400 font-mono text-sm uppercase tracking-widest">
+              <span className="w-1 h-1 bg-accent rounded-full"></span>
+              {bootcamp.duration_days} Days Intensive
+            </div>
+          )}
         </div>
 
         <div className="bg-[#0a0a0a] border border-[#333] p-8 md:p-12 mb-8 relative group">
           <div className="absolute inset-0 bg-gradient-to-br from-burgundy/5 to-navy/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="flex justify-between items-start mb-4 relative z-10">
             <h2 className="text-xl uppercase tracking-wider font-bold text-gray-300">Overview</h2>
-            {bootcamp.duration_days && (
-              <span className="bg-white/10 text-white border border-white/20 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
-                {bootcamp.duration_days} Days
-              </span>
-            )}
           </div>
           <p className="text-lg text-gray-400 leading-relaxed relative z-10 text-justify">
-            {bootcamp.description}
+            {bootcamp.description.replace(new RegExp(`${bootcamp.duration_days}\\s*Days`, 'gi'), '').trim()}
           </p>
         </div>
 
-        {bootcamp.topics_covered && (
-          <div className="bg-[#0a0a0a] border border-[#333] p-8 md:p-12 mb-8 relative group">
-            <h3 className="text-sm font-mono text-gray-500 uppercase tracking-widest mb-8 border-b border-[#222] pb-4">[ TOPICS COVERED ]</h3>
-            <div className="space-y-8">
-              {bootcamp.topics_covered.split(/(?=Day \d+)/).filter(Boolean).map((section: string, idx: number) => {
-                const parts = section.split(/ - ([\s\S]*)/);
-                const title = parts[0].trim();
-                const content = parts[1]?.trim();
-                
-                return (
-                  <div key={idx} className="relative z-10">
-                    <h4 className="text-white font-bold text-lg mb-2 uppercase tracking-tight">{title}</h4>
-                    {content && (
-                      <p className="text-gray-400 leading-relaxed text-justify font-normal">
-                        {content}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+
 
         {bootcamp.final_task && (
           <div className="bg-[#111] border border-[#444] p-8 md:p-12 mb-12 relative overflow-hidden">
@@ -85,7 +66,7 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
         )}
 
         <div className="text-center">
-          <Link 
+          <Link
             href={`/register?bootcampId=${bootcamp.id}`}
             className="inline-block px-12 py-4 bg-white text-black hover:bg-accent hover:text-black transition-all duration-300 uppercase text-lg font-bold tracking-widest relative overflow-hidden group"
           >

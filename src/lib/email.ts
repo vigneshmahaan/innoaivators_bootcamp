@@ -124,3 +124,40 @@ export async function sendFailedEmail(toEmail: string, userName: string, courseN
     throw error;
   }
 }
+
+export async function sendPaymentSuccessEmail(toEmail: string, userName: string, courseName: string, whatsappLink: string) {
+  const mailOptions = {
+    from: `"INNOAIVATORS TECH SOLUTION" <${process.env.EMAIL_USER}>`,
+    to: toEmail,
+    subject: `Payment Successful! Welcome to ${courseName} 🚀`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <h2 style="color: #0056b3; text-align: center;">INNOAIVATORS TECH SOLUTION</h2>
+        <h3 style="text-align: center; color: #27ae60;">Payment Successfully Received!</h3>
+        <p>Dear <strong>${userName}</strong>,</p>
+        <p>Great news! We have received your payment for the <strong>${courseName}</strong> bootcamp.</p>
+        <p>Your registration is now confirmed. To get started and stay updated, please join our official WhatsApp group for this batch:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${whatsappLink}" target="_blank" style="background-color: #25D366; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+            Join WhatsApp Group
+          </a>
+        </div>
+        
+        <p>This group will be our primary mode of communication for batch timings, meeting links, and announcements.</p>
+        <p>If you have any questions, feel free to reply to this email.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>The INNOAIVATORS Team</strong></p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Payment success email sent to ${toEmail}`);
+  } catch (error) {
+    console.error('Error sending payment success email:', error);
+    throw error;
+  }
+}

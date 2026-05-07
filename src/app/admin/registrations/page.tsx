@@ -145,19 +145,6 @@ export default function RegistrationsPage() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Student Type</label>
-          <select 
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="bg-[#111] border border-[#222] p-3 text-white focus:outline-none focus:border-white transition-colors"
-          >
-            <option value="ALL">All Types</option>
-            <option value="school">School</option>
-            <option value="college">College</option>
-          </select>
-        </div>
-
-        <div>
           <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Year of Study</label>
           <select 
             value={filterYear}

@@ -46,7 +46,6 @@ export default function AnalyticsPage() {
   const revenueRegistrations = registrations.filter(r => r.payment_status === 'paid' || r.payment_status === 'verified');
   const totalRevenue = revenueRegistrations.reduce((acc, curr) => acc + (curr.bootcamps?.price || 0), 0);
 
-  const schoolRegistrations = registrations.filter(r => r.student_type === 'school').length;
   const collegeRegistrations = registrations.filter(r => r.student_type === 'college').length;
 
   const registrationsByCourse = bootcamps.map(course => {
@@ -74,11 +73,7 @@ export default function AnalyticsPage() {
           <p className="text-xs text-gray-600 font-mono mt-2 uppercase tracking-wider">From Paid/Verified Only</p>
         </div>
         <div className="bg-[#0a0a0a] border border-[#333] p-8">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">School Students</h3>
-          <p className="text-5xl font-black text-white">{schoolRegistrations}</p>
-        </div>
-        <div className="bg-[#0a0a0a] border border-[#333] p-8">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">College Students</h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Total Students</h3>
           <p className="text-5xl font-black text-white">{collegeRegistrations}</p>
         </div>
       </div>

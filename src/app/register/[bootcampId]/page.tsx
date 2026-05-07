@@ -101,7 +101,6 @@ export default function Register({ params }: { params: Promise<{ bootcampId: str
                     onChange={(e) => setFormData({ ...formData, education: e.target.value })}
                   >
                     <option value="" disabled>Select your education</option>
-                    <option value="High School">High School</option>
                     <option value="Undergraduate">Undergraduate (Bachelors)</option>
                     <option value="Postgraduate">Postgraduate (Masters/PhD)</option>
                     <option value="Self Taught / Other">Self Taught / Other</option>

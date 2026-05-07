@@ -76,19 +76,15 @@ export default function NewBootcampPage() {
               className="w-full md:w-1/2 bg-[#111] border border-[#222] p-4 text-white font-mono text-lg focus:outline-none focus:border-white transition-colors"
               placeholder="e.g. 30"
             />
+          </div>          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">WhatsApp Group Link</label>
+            <input 
+              type="url" 
+              name="whatsapp_link" 
+              className="w-full bg-[#111] border border-[#222] p-4 text-white font-mono text-sm focus:outline-none focus:border-white transition-colors"
+              placeholder="https://chat.whatsapp.com/..."
+            />
           </div>
-
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Topics Covered (Comma separated or short list)</label>
-            <textarea 
-              name="topics_covered" 
-              required
-              rows={3}
-              className="w-full bg-[#111] border border-[#222] p-4 text-gray-300 font-medium leading-relaxed focus:outline-none focus:border-white transition-colors"
-              placeholder="e.g. React, Next.js, TailwindCSS..."
-            ></textarea>
-          </div>
-
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Final Task / Internship Challenge</label>
             <textarea 

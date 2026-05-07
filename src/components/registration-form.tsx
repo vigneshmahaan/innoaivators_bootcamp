@@ -24,7 +24,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
     district: '',
     state: '',
     country: '',
-    studentType: 'school', // 'school' or 'college'
+    studentType: 'college', // Default to college
     institutionName: '',
     educationDetails: '',
     yearOfStudy: '',
@@ -61,9 +61,9 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
       if (!users || users.length === 0) {
         const { data: newUser, error: createError } = await supabase
           .from('users')
-          .insert({ 
-            name: formData.name, 
-            email: formData.email, 
+          .insert({
+            name: formData.name,
+            email: formData.email,
             phone: `${formData.countryCode} ${formData.phone}`,
             district: formData.district,
             state: formData.state,
@@ -71,7 +71,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
           })
           .select('id')
           .single();
-        
+
         if (createError) throw createError;
         userId = newUser.id;
       } else {
@@ -79,14 +79,14 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
         const { error: updateError } = await supabase
           .from('users')
           .update({
-            name: formData.name, 
+            name: formData.name,
             phone: `${formData.countryCode} ${formData.phone}`,
             district: formData.district,
             state: formData.state,
             country: formData.country
           })
           .eq('id', userId);
-        
+
         if (updateError) throw updateError;
       }
 
@@ -125,7 +125,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
   return (
     <div className="bg-[#111] border border-[#222] rounded-2xl p-8 relative shadow-2xl overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
-      
+
       {/* Progress */}
       <div className="flex gap-2 mb-8">
         {[1, 2, 3, 4].map((i) => (
@@ -141,19 +141,19 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             <h2 className="text-2xl font-bold uppercase mb-6">1. Personal Info</h2>
             <div>
               <label className={labelClass}>Full Name <span className="text-red-500 ml-1">*</span></label>
-              <input required type="text" className={inputClass} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+              <input required type="text" className={inputClass} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
             </div>
             <div>
               <label className={labelClass}>Email Address <span className="text-red-500 ml-1">*</span></label>
-              <input required type="email" className={inputClass} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+              <input required type="email" className={inputClass} value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
             </div>
             <div>
               <label className={labelClass}>Phone Number <span className="text-red-500 ml-1">*</span></label>
               <div className="flex gap-2">
-                <select 
-                  className={`${baseInputClass} w-[100px] shrink-0`} 
-                  value={formData.countryCode} 
-                  onChange={e => setFormData({...formData, countryCode: e.target.value})}
+                <select
+                  className={`${baseInputClass} w-[100px] shrink-0`}
+                  value={formData.countryCode}
+                  onChange={e => setFormData({ ...formData, countryCode: e.target.value })}
                 >
                   <option value="+91">+91 (IN)</option>
                   <option value="+1">+1 (US)</option>
@@ -162,21 +162,21 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                   <option value="+971">+971 (AE)</option>
                   <option value="+65">+65 (SG)</option>
                 </select>
-                <input required type="tel" className={`${baseInputClass} flex-1 min-w-0`} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="Phone number" />
+                <input required type="tel" className={`${baseInputClass} flex-1 min-w-0`} value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} placeholder="Phone number" />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className={labelClass}>District <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.district} onChange={e => setFormData({...formData, district: e.target.value})} placeholder="e.g. Salem" />
+                <input required type="text" className={inputClass} value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} placeholder="e.g. Salem" />
               </div>
               <div>
                 <label className={labelClass}>State <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} placeholder="e.g. Tamil Nadu" />
+                <input required type="text" className={inputClass} value={formData.state} onChange={e => setFormData({ ...formData, state: e.target.value })} placeholder="e.g. Tamil Nadu" />
               </div>
               <div>
                 <label className={labelClass}>Country <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} placeholder="e.g. India" />
+                <input required type="text" className={inputClass} value={formData.country} onChange={e => setFormData({ ...formData, country: e.target.value })} placeholder="e.g. India" />
               </div>
             </div>
           </div>
@@ -185,63 +185,36 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <h2 className="text-2xl font-bold uppercase mb-6">2. Academic Background</h2>
-            
-            <div>
-              <label className={labelClass}>I am a... <span className="text-red-500 ml-1">*</span></label>
-              <div className="grid grid-cols-2 gap-4">
-                <button 
-                  type="button"
-                  onClick={() => setFormData({...formData, studentType: 'school'})}
-                  className={`p-4 border rounded-xl text-center uppercase tracking-wider font-bold transition-all ${formData.studentType === 'school' ? 'border-primary text-primary bg-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'border-[#333] text-gray-400 hover:border-gray-500'}`}
-                >
-                  School Student
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setFormData({...formData, studentType: 'college'})}
-                  className={`p-4 border rounded-xl text-center uppercase tracking-wider font-bold transition-all ${formData.studentType === 'college' ? 'border-primary text-primary bg-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'border-[#333] text-gray-400 hover:border-gray-500'}`}
-                >
-                  College Student
-                </button>
-              </div>
-            </div>
 
             <div>
               <label className={labelClass}>Institution Name <span className="text-red-500 ml-1">*</span></label>
-              <input required type="text" className={inputClass} value={formData.institutionName} onChange={e => setFormData({...formData, institutionName: e.target.value})} placeholder="Name of your school or college" />
+              <input required type="text" className={inputClass} value={formData.institutionName} onChange={e => setFormData({ ...formData, institutionName: e.target.value })} placeholder="Name of your college" />
             </div>
 
-            {formData.studentType === 'school' ? (
+            <div className="space-y-6">
               <div>
-                <label className={labelClass}>Current Grade/Class <span className="text-red-500 ml-1">*</span></label>
-                <input required type="text" className={inputClass} value={formData.educationDetails} onChange={e => setFormData({...formData, educationDetails: e.target.value})} placeholder="e.g., 10th Grade, 12th Standard" />
+                <label className={labelClass}>Field of Study <span className="text-red-500 ml-1">*</span></label>
+                <select required className={inputClass} value={formData.fieldOfStudy} onChange={e => setFormData({ ...formData, fieldOfStudy: e.target.value })}>
+                  <option value="">Select Field</option>
+                  <option value="Arts">Arts</option>
+                  <option value="Science">Science</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
-            ) : (
-              <div className="space-y-6">
-                <div>
-                  <label className={labelClass}>Degree / Course <span className="text-red-500 ml-1">*</span></label>
-                  <input required type="text" className={inputClass} value={formData.educationDetails} onChange={e => setFormData({...formData, educationDetails: e.target.value})} placeholder="e.g., B.Tech, B.Sc" />
-                </div>
-                <div>
-                  <label className={labelClass}>Department / Branch <span className="text-red-500 ml-1">*</span></label>
-                  <input required type="text" className={inputClass} value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="e.g., Computer Science, Mechanical" />
-                </div>
-                <div>
-                  <label className={labelClass}>Field of Study <span className="text-red-500 ml-1">*</span></label>
-                  <select required className={inputClass} value={formData.fieldOfStudy} onChange={e => setFormData({...formData, fieldOfStudy: e.target.value})}>
-                    <option value="">Select Field</option>
-                    <option value="Arts">Arts</option>
-                    <option value="Science">Science</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className={labelClass}>Year of Study <span className="text-red-500 ml-1">*</span></label>
-                  <input required type="text" className={inputClass} value={formData.yearOfStudy} onChange={e => setFormData({...formData, yearOfStudy: e.target.value})} placeholder="e.g., 2nd Year, Final Year" />
-                </div>
+              <div>
+                <label className={labelClass}>Degree / Course <span className="text-red-500 ml-1">*</span></label>
+                <input required type="text" className={inputClass} value={formData.educationDetails} onChange={e => setFormData({ ...formData, educationDetails: e.target.value })} placeholder="e.g., B.Tech, B.Sc" />
               </div>
-            )}
+              <div>
+                <label className={labelClass}>Department / Branch <span className="text-red-500 ml-1">*</span></label>
+                <input required type="text" className={inputClass} value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} placeholder="e.g., Computer Science, Mechanical" />
+              </div>
+              <div>
+                <label className={labelClass}>Year of Study <span className="text-red-500 ml-1">*</span></label>
+                <input required type="text" className={inputClass} value={formData.yearOfStudy} onChange={e => setFormData({ ...formData, yearOfStudy: e.target.value })} placeholder="e.g., 2nd Year, Final Year" />
+              </div>
+            </div>
           </div>
         )}
 
@@ -250,12 +223,12 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             <h2 className="text-2xl font-bold uppercase mb-6">3. Future Interests</h2>
             <div>
               <label className={labelClass}>What topics are you interested in for future bootcamps? <span className="text-red-500 ml-1">*</span></label>
-              <textarea 
-                required 
-                rows={4} 
-                className={inputClass} 
-                value={formData.futureInterests} 
-                onChange={e => setFormData({...formData, futureInterests: e.target.value})}
+              <textarea
+                required
+                rows={4}
+                className={inputClass}
+                value={formData.futureInterests}
+                onChange={e => setFormData({ ...formData, futureInterests: e.target.value })}
                 placeholder="e.g., AI, Web Development, Cybersecurity..."
               ></textarea>
               <p className="text-gray-500 text-xs mt-2 font-mono">This helps us design future curriculum tailored for you.</p>
@@ -268,27 +241,50 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             <h2 className="text-2xl font-bold uppercase mb-6">4. Payment Verification</h2>
             <div className="bg-[#0a0a0a] border border-[#222] rounded-xl p-6 mb-6">
               <h3 className="text-primary font-bold text-lg mb-2">Total Amount: ₹{price.toLocaleString('en-IN')}</h3>
-              <p className="text-gray-400 text-sm mb-4">Please complete your payment using the details below and upload a screenshot of your successful transaction.</p>
-              
-              <div className="bg-[#111] border border-[#222] rounded-lg p-4 font-mono text-sm text-gray-300 space-y-2">
-                <p>Bank: InnoAivators Tech Bank</p>
-                <p>Account No: 987654321098</p>
-                <p>IFSC: INNO0001234</p>
-                <p>UPI ID: innoaivators@ybl</p>
+              <p className="text-gray-400 text-sm mb-6">Complete your payment securely via UPI. Once done, paste the transaction/screenshot link below for verification.</p>
+
+              <div className="grid md:grid-cols-2 gap-6 items-center">
+                <div className="bg-white p-4 rounded-xl flex items-center justify-center">
+                  {/* In a real app, this would be a dynamic QR code */}
+                  <div className="text-black text-center">
+                    <div className="font-black text-xs mb-2 uppercase tracking-tighter">Scan to Pay</div>
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=7010396731@superyes%26pn=InnoAivators%20Tech%26am=${price}%26cu=INR`}
+                      alt="UPI QR Code"
+                      className="w-32 h-32 mx-auto"
+                    />
+                    <div className="font-mono text-[10px] mt-2 font-bold opacity-50 uppercase">UPI ID: vigneshmahaan@okaxis</div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <a
+                    href={`upi://pay?pa=7010396731@superyes&pn=InnoAivators%20Tech&am=${price}&cu=INR`}
+                    className="flex items-center justify-center gap-3 w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-sm"
+                  >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" className="h-4" />
+                    Pay via UPI App
+                  </a>
+                  <p className="text-[10px] text-gray-500 font-mono text-center uppercase tracking-widest leading-relaxed">
+                    Supported: GPay, PhonePe, Paytm, etc.
+                  </p>
+                </div>
               </div>
             </div>
 
             <div>
-              <label className={labelClass}>Upload Payment Screenshot URL <span className="text-red-500 ml-1">*</span></label>
-              <input 
-                required 
-                type="text" 
-                className={inputClass} 
-                value={formData.paymentProofUrl} 
-                onChange={e => setFormData({...formData, paymentProofUrl: e.target.value})} 
-                placeholder="Paste link to your screenshot (Google Drive, Imgur, etc.)"
+              <label className={labelClass}>Payment Screenshot URL / Ref No. <span className="text-red-500 ml-1">*</span></label>
+              <input
+                required
+                type="text"
+                className={inputClass}
+                value={formData.paymentProofUrl}
+                onChange={e => setFormData({ ...formData, paymentProofUrl: e.target.value })}
+                placeholder="Paste link to screenshot or Transaction ID"
               />
-              <p className="text-gray-500 text-xs mt-2 font-mono">In a full production version, this would be an actual file upload. For now, please provide a link to your screenshot.</p>
+              <p className="text-gray-500 text-[10px] mt-2 font-mono uppercase tracking-widest">
+                Verification takes usually less than 2 hours.
+              </p>
             </div>
           </div>
         )}
@@ -299,9 +295,9 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
               Back
             </button>
           ) : <div></div>}
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={loading}
             className="px-8 py-3 bg-white text-black rounded-xl hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all uppercase text-sm font-bold tracking-widest disabled:opacity-50 flex items-center gap-2"
           >

@@ -61,8 +61,8 @@ export async function createBootcamp(formData: FormData) {
   const description = formData.get('description') as string;
   const priceStr = formData.get('price') as string;
   const durationStr = formData.get('duration_days') as string;
-  const topics_covered = formData.get('topics_covered') as string;
   const final_task = formData.get('final_task') as string;
+  const whatsapp_link = formData.get('whatsapp_link') as string;
   
   if (!title || !description || !priceStr) {
     return { error: 'Required fields are missing' };
@@ -84,8 +84,8 @@ export async function createBootcamp(formData: FormData) {
       description, 
       price,
       duration_days,
-      topics_covered,
-      final_task
+      final_task,
+      whatsapp_link
     });
 
   if (error) {
@@ -125,6 +125,15 @@ export async function updateRegistrationPaymentStatus(id: string, status: string
 
   const { supabase } = await import('@/lib/supabase');
   
+  // Fetch details first to get email and course title
+  const { data: reg, error: fetchError } = await supabase
+    .from('registrations')
+    .select('*, users(name, email, phone), bootcamps(title, whatsapp_link)')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) throw fetchError;
+
   const { error } = await supabase
     .from('registrations')
     .update({ payment_status: status })
@@ -133,6 +142,32 @@ export async function updateRegistrationPaymentStatus(id: string, status: string
   if (error) {
     console.error('Error updating registration status:', error);
     throw new Error('Failed to update registration status');
+  }
+
+  // Send email if verified
+  if (status === 'verified') {
+    const { sendPaymentSuccessEmail } = await import('@/lib/email');
+    // Use the link from the bootcamp table, fallback to a general one if not set
+    const whatsappLink = reg.bootcamps.whatsapp_link || "https://chat.whatsapp.com/INNOAIVATORS_GENERAL_LINK"; 
+    
+    try {
+      await sendPaymentSuccessEmail(
+        reg.users.email, 
+        reg.users.name, 
+        reg.bootcamps.title, 
+        whatsappLink
+      );
+      
+      // LOGIC: Add to WhatsApp Group
+      // This requires a WhatsApp Business API or third-party service like Twilio.
+      // Placeholder for actual API call:
+      console.log(`[WHATSAPP] Adding ${reg.users.phone} to Group via Link: ${whatsappLink}`);
+      
+      // Update that email was sent
+      await supabase.from('registrations').update({ verified_email_sent: true }).eq('id', id);
+    } catch (err) {
+      console.error('Failed to send success email/notification:', err);
+    }
   }
 }
 
