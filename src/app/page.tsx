@@ -16,68 +16,66 @@ export default async function Home() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative pt-8 pb-8 px-6 overflow-hidden flex flex-col items-center justify-center text-center min-h-[calc(100vh-6rem)]">
-          <div className="max-w-5xl mx-auto relative z-10 space-y-4">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
+        <section className="relative pt-20 pb-12 px-6 overflow-hidden flex flex-col items-center justify-center text-center min-h-[70vh] md:min-h-[calc(100vh-6rem)]">
+          <div className="max-w-5xl mx-auto relative z-10 space-y-6">
+            <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9]">
               INNOVATE.<br />CREATE.<br />
-              <span className="font-mono text-gray-500 tracking-tight">ELEVATE.</span>
+              <span className="text-gray-500">ELEVATE.</span>
             </h1>
-            <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto font-medium tracking-wide uppercase">
-              Intensive, industry-aligned bootcamps. No fluff. Just raw skills.
+            <p className="text-xs md:text-sm text-gray-500 max-w-lg mx-auto font-black uppercase tracking-[0.3em] leading-relaxed">
+              Intensive, industry-aligned bootcamps.<br/>No fluff. Just raw skills.
             </p>
-            <div className="pt-4">
-              <a href="#bootcamps" className="inline-flex items-center justify-center px-10 py-4 text-sm font-black uppercase tracking-widest text-black bg-white rounded-full hover:bg-gray-200 transition-colors">
-                Explore Bootcamps
+            <div className="pt-8">
+              <a href="#bootcamps" className="inline-flex items-center justify-center px-12 py-5 text-[10px] font-black uppercase tracking-[0.3em] text-black bg-white rounded-full hover:bg-gray-200 transition-all shadow-2xl shadow-white/10">
+                Explore Programs
               </a>
             </div>
           </div>
         </section>
 
-        {/* About Section - 50/50 Split */}
-        <section id="about" className="py-32 px-6 border-t border-[#333]">
+        {/* About Section */}
+        <section id="about" className="py-24 md:py-40 px-6 border-t border-white/5 bg-[#030303]">
           <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-16 md:gap-24">
+            <div className="grid lg:grid-cols-2 gap-20 lg:gap-32">
               <div>
-                <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8">
-                  ABOUT US
+                <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter mb-10 leading-none">
+                  WE BUILD<br/><span className="text-gray-500">CAREERS.</span>
                 </h2>
-                <p className="text-gray-400 text-xl leading-relaxed font-medium">
+                <p className="text-gray-400 text-lg md:text-xl leading-relaxed font-medium text-justify">
                   At InnoAivators, we bridge the gap between academic learning and industry demands. We don't just build software; we build careers through intensive training programs that equip you with practical experience.
                 </p>
               </div>
-              <div className="space-y-8 border-l border-[#333] pl-8 md:pl-16">
-                <div className="space-y-2">
-                  <span className="font-mono text-sm text-gray-500">[01]</span>
-                  <h3 className="text-3xl font-bold uppercase tracking-tight">AI AUTOMATION</h3>
-                </div>
-                <div className="space-y-2">
-                  <span className="font-mono text-sm text-gray-500">[02]</span>
-                  <h3 className="text-3xl font-bold uppercase tracking-tight">WEB & APP DEV</h3>
-                </div>
-                <div className="space-y-2">
-                  <span className="font-mono text-sm text-gray-500">[03]</span>
-                  <h3 className="text-3xl font-bold uppercase tracking-tight">IOT SOLUTIONS</h3>
-                </div>
+              <div className="space-y-12 border-t lg:border-t-0 lg:border-l border-white/10 pt-12 lg:pt-0 lg:pl-20">
+                {[
+                  { id: '01', title: 'AI AUTOMATION' },
+                  { id: '02', title: 'WEB & APP DEV' },
+                  { id: '03', title: 'IOT SOLUTIONS' }
+                ].map(item => (
+                  <div key={item.id} className="group cursor-default">
+                    <span className="font-mono text-[10px] text-gray-600 block mb-2 tracking-[0.3em]">[{item.id}]</span>
+                    <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter group-hover:text-gray-400 transition-colors">{item.title}</h3>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Internship Highlight - The Challenge */}
-        <section className="py-32 px-6 border-t border-[#333] bg-[#050505]">
+        {/* Internship Highlight */}
+        <section className="py-24 md:py-40 px-6 border-t border-white/5 bg-black">
           <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div className="order-2 md:order-1">
-                <p className="text-xl text-gray-400 leading-relaxed font-medium mb-12">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div className="order-2 lg:order-1">
+                <p className="text-lg md:text-2xl text-gray-400 leading-relaxed font-medium mb-12 text-justify">
                   We believe in learning by doing. During our bootcamps, you will be assigned a comprehensive final task. Participants who complete this task efficiently will be directly offered an internship.
                 </p>
-                <a href="#bootcamps" className="inline-flex items-center justify-center px-8 py-4 text-sm font-bold uppercase tracking-widest text-white border border-white hover:bg-white hover:text-black transition-colors">
+                <a href="#bootcamps" className="inline-flex items-center justify-center w-full md:w-auto px-12 py-5 text-[10px] font-black uppercase tracking-[0.3em] text-white border border-white/20 hover:bg-white hover:text-black transition-all">
                   Accept Challenge
                 </a>
               </div>
-              <div className="order-1 md:order-2 md:text-right">
-                <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none">
-                  THE<br /><span className="text-gray-500">INTERNSHIP</span><br />CHALLENGE
+              <div className="order-1 lg:order-2 lg:text-right">
+                <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.8]">
+                  THE<br /><span className="text-gray-600">INTERNSHIP</span><br />CHALLENGE
                 </h2>
               </div>
             </div>
@@ -85,11 +83,11 @@ export default async function Home() {
         </section>
 
         {/* Bootcamps Section */}
-        <section id="bootcamps" className="py-32 px-6 border-t border-[#333]">
+        <section id="bootcamps" className="py-24 md:py-40 px-6 border-t border-white/5 bg-[#030303]">
           <div className="max-w-7xl mx-auto">
-            <div className="mb-20">
-              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">OUR COURSES</h2>
-              <p className="text-gray-500 font-mono text-lg uppercase tracking-widest">[ SELECT A PROGRAM ]</p>
+            <div className="mb-20 text-center md:text-left">
+              <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter mb-4">OUR COURSES</h2>
+              <p className="text-gray-600 font-mono text-[10px] uppercase tracking-[0.4em]">[ SELECT A PROGRAM ]</p>
             </div>
 
             {error ? (
