@@ -246,69 +246,69 @@ export async function bulkSendStatusEmails(bootcampId?: string) {
   let verifiedCount = 0;
   let failedCount = 0;
 
-  // --- Send Verified Emails (The Daily Work Phase) ---
-  const verifiedQuery = supabase
+  // --- Send Verified Emails ---
+  const { data: verifiedRegs } = await supabase
     .from('registrations')
     .select('id, bootcamp_id, batch_id, users(name, email), bootcamps(title, whatsapp_link), batches(name)')
     .eq('payment_status', 'verified')
-    .eq('verified_email_sent', false);
+    .eq('verified_email_sent', false)
+    .eq('bootcamp_id', bootcampId || ''); // Should usually have a bootcampId from UI
 
-  if (bootcampId) verifiedQuery.eq('bootcamp_id', bootcampId);
+  if (verifiedRegs && verifiedRegs.length > 0) {
+    // Optimization: Fetch all active batches for this bootcamp once
+    const { data: batches } = await supabase
+      .from('batches')
+      .select('id, name')
+      .eq('bootcamp_id', verifiedRegs[0].bootcamp_id)
+      .order('created_at', { ascending: true });
 
-  const { data: verifiedRegs } = await verifiedQuery;
+    const defaultBatch = batches?.[0];
 
-  for (const _reg of (verifiedRegs || [])) {
-    const reg = _reg as any;
-    if (reg.users?.email) {
+    const verifiedTasks = verifiedRegs.map(async (reg: any) => {
+      if (!reg.users?.email) return;
+
       try {
         let batchName = reg.batches?.name;
-        
+        let targetBatchId = reg.batch_id;
+
         // AUTO-BATCHING if not assigned
-        if (!batchName) {
-           const { data: batches } = await supabase
-            .from('batches')
-            .select('id, name')
-            .eq('bootcamp_id', reg.bootcamp_id)
-            .order('created_at', { ascending: true });
-            
-           if (batches && batches.length > 0) {
-             await supabase.from('registrations').update({ batch_id: batches[0].id }).eq('id', reg.id);
-             batchName = batches[0].name;
-           } else {
-             batchName = "Your assigned batch";
-           }
+        if (!batchName && defaultBatch) {
+          targetBatchId = defaultBatch.id;
+          batchName = defaultBatch.name;
+          // Update DB - run in background
+          await supabase.from('registrations').update({ batch_id: targetBatchId }).eq('id', reg.id);
         }
 
         await sendPaymentSuccessEmail(
           reg.users.email,
           reg.users.name,
           reg.bootcamps?.title || 'Course',
-          batchName,
+          batchName || "Assigned Batch",
           reg.bootcamps?.whatsapp_link || "https://chat.whatsapp.com/INNOAIVATORS_GENERAL_LINK"
         );
         
         await supabase.from('registrations').update({ verified_email_sent: true }).eq('id', reg.id);
         verifiedCount++;
       } catch (err) {
-        console.error(`Failed to send success email to ${reg.users.email}`, err);
+        console.error(`Failed to process verified email for ${reg.id}`, err);
       }
-    }
+    });
+
+    await Promise.allSettled(verifiedTasks);
   }
 
   // --- Send Failed Emails ---
-  const failedQuery = supabase
+  const { data: failedRegs } = await supabase
     .from('registrations')
     .select('id, users(name, email), bootcamps(title)')
     .eq('payment_status', 'failed')
-    .eq('failed_email_sent', false);
+    .eq('failed_email_sent', false)
+    .eq('bootcamp_id', bootcampId || '');
 
-  if (bootcampId) failedQuery.eq('bootcamp_id', bootcampId);
+  if (failedRegs && failedRegs.length > 0) {
+    const failedTasks = failedRegs.map(async (reg: any) => {
+      if (!reg.users?.email) return;
 
-  const { data: failedRegs } = await failedQuery;
-
-  for (const _reg of (failedRegs || [])) {
-    const reg = _reg as any;
-    if (reg.users?.email) {
       try {
         await sendFailedEmail(
           reg.users.email,
@@ -318,9 +318,11 @@ export async function bulkSendStatusEmails(bootcampId?: string) {
         await supabase.from('registrations').update({ failed_email_sent: true }).eq('id', reg.id);
         failedCount++;
       } catch (err) {
-        console.error(`Failed to send failed email to ${reg.users.email}`);
+        console.error(`Failed to process failed email for ${reg.id}`, err);
       }
-    }
+    });
+
+    await Promise.allSettled(failedTasks);
   }
 
   return { verifiedCount, failedCount };

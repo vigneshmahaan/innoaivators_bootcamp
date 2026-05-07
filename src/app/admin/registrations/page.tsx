@@ -33,7 +33,8 @@ export default function RegistrationsPage() {
           users ( name, email, phone, district, state, country ),
           bootcamps ( title )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(100);
 
       if (error) throw error;
       setRegistrations(data || []);
