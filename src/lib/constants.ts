@@ -27,19 +27,19 @@ export const TAMIL_NADU_DISTRICTS = [
 export const ACADEMIC_DATA = {
   "Engineering": {
     degrees: ["B.E", "B.Tech", "M.E", "M.Tech", "Diploma"],
-    departments: ["Computer Science", "Information Technology", "Electronics & Communication", "Electrical & Electronics", "Mechanical", "Civil", "Artificial Intelligence & Data Science", "Biotechnology", "Chemical"]
+    departments: ["Computer Science", "Information Technology", "Electronics & Communication", "Electrical & Electronics", "Mechanical", "Civil", "Artificial Intelligence & Data Science", "Biotechnology", "Chemical", "Other"]
   },
   "Science": {
     degrees: ["B.Sc", "M.Sc", "B.C.A", "M.C.A"],
-    departments: ["Computer Science", "Physics", "Chemistry", "Mathematics", "Microbiology", "Visual Communication"]
+    departments: ["Computer Science", "Physics", "Chemistry", "Mathematics", "Microbiology", "Visual Communication", "Other"]
   },
   "Arts": {
     degrees: ["B.A", "M.A", "B.Com", "M.Com", "B.B.A", "M.B.A"],
-    departments: ["English", "Economics", "History", "Commerce", "Business Administration", "Corporate Secretaryship"]
+    departments: ["English", "Economics", "History", "Commerce", "Business Administration", "Corporate Secretaryship", "Other"]
   },
   "Medical": {
     degrees: ["MBBS", "BDS", "B.Pharm", "BPT"],
-    departments: ["General Medicine", "Dental", "Pharmacy", "Physiotherapy"]
+    departments: ["General Medicine", "Dental", "Pharmacy", "Physiotherapy", "Other"]
   }
 };
 

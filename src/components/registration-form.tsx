@@ -17,6 +17,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
   const [error, setError] = useState('');
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [paymentPreview, setPaymentPreview] = useState<string | null>(null);
+  const [customDepartment, setCustomDepartment] = useState('');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -155,7 +156,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
           institution_name: formData.institutionName,
           education_details: formData.educationDetails,
           year_of_study: formData.yearOfStudy,
-          department: formData.department,
+          department: formData.department === 'Other' ? customDepartment : formData.department,
           field_of_study: formData.fieldOfStudy,
           future_interests: formData.futureInterests,
           payment_status: 'pending',
@@ -312,17 +313,33 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             </div>
 
             {formData.fieldOfStudy && (
-              <div>
-                <label className={labelClass}>Department / Branch <span className="text-red-500 ml-1">*</span></label>
-                <select 
-                  required 
-                  className={inputClass} 
-                  value={formData.department} 
-                  onChange={e => setFormData({ ...formData, department: e.target.value })}
-                >
-                  <option value="">Select Department</option>
-                  {(ACADEMIC_DATA as any)[formData.fieldOfStudy].departments.map((d: string) => <option key={d} value={d}>{d}</option>)}
-                </select>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>Department / Branch <span className="text-red-500 ml-1">*</span></label>
+                  <select 
+                    required 
+                    className={inputClass} 
+                    value={formData.department} 
+                    onChange={e => setFormData({ ...formData, department: e.target.value })}
+                  >
+                    <option value="">Select Department</option>
+                    {(ACADEMIC_DATA as any)[formData.fieldOfStudy].departments.map((d: string) => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+
+                {formData.department === 'Other' && (
+                  <div className="animate-in fade-in slide-in-from-top-2">
+                    <label className={labelClass}>Specify Your Department <span className="text-red-500 ml-1">*</span></label>
+                    <input 
+                      required 
+                      type="text" 
+                      className={inputClass} 
+                      value={customDepartment} 
+                      onChange={e => setCustomDepartment(e.target.value)} 
+                      placeholder="e.g., Aerospace Engineering" 
+                    />
+                  </div>
+                )}
               </div>
             )}
 
