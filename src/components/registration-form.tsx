@@ -45,9 +45,9 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
-      // 100KB Limit Check
-      if (file.size > 100 * 1024) {
-        setError('Image size must be under 100KB. Please compress your screenshot.');
+      // 500KB Limit Check
+      if (file.size > 500 * 1024) {
+        setError('Image size must be under 500KB. Please compress your screenshot if it is larger.');
         setPaymentFile(null);
         setPaymentPreview(null);
         e.target.value = ''; // Reset input
@@ -179,11 +179,11 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
   const labelClass = "block text-xs uppercase tracking-wider text-gray-400 mb-2 font-semibold";
 
   return (
-    <div className="bg-[#111] border border-[#222] rounded-2xl p-8 relative shadow-2xl overflow-hidden">
+    <div className="bg-[#111] border border-[#222] rounded-2xl p-4 md:p-8 relative shadow-2xl overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
 
       {/* Progress */}
-      <div className="flex gap-2 mb-8">
+      <div className="flex gap-1 md:gap-2 mb-6 md:mb-8">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className={`h-1 flex-1 ${step >= i ? 'bg-accent' : 'bg-[#333]'}`}></div>
         ))}
@@ -194,7 +194,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
       <form onSubmit={handleSubmit}>
         {step === 1 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <h2 className="text-2xl font-bold uppercase mb-6">1. Personal Info</h2>
+            <h2 className="text-xl md:text-2xl font-bold uppercase mb-4 md:mb-6">1. Personal Info</h2>
             <div>
               <label className={labelClass}>Full Name <span className="text-red-500 ml-1">*</span></label>
               <input required type="text" className={inputClass} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
@@ -275,7 +275,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
 
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <h2 className="text-2xl font-bold uppercase mb-6">2. Academic Background</h2>
+            <h2 className="text-xl md:text-2xl font-bold uppercase mb-4 md:mb-6">2. Academic Background</h2>
 
             <div>
               <label className={labelClass}>Institution Name <span className="text-red-500 ml-1">*</span></label>
@@ -360,7 +360,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
 
         {step === 3 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <h2 className="text-2xl font-bold uppercase mb-6">3. Future Interests</h2>
+            <h2 className="text-xl md:text-2xl font-bold uppercase mb-4 md:mb-6">3. Future Interests</h2>
             <div>
               <label className={labelClass}>What topics are you interested in for future bootcamps? <span className="text-red-500 ml-1">*</span></label>
               <textarea
@@ -378,10 +378,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
 
         {step === 4 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <h2 className="text-2xl font-bold uppercase mb-6">4. Payment Verification</h2>
-            <div className="bg-[#0a0a0a] border border-[#222] rounded-xl p-6 mb-6">
-              <h3 className="text-primary font-bold text-lg mb-2">Total Amount: ₹{price.toLocaleString('en-IN')}</h3>
-              <p className="text-gray-400 text-sm mb-6">Complete your payment securely via UPI. Once done, paste the transaction/screenshot link below for verification.</p>
+            <h2 className="text-xl md:text-2xl font-bold uppercase mb-4 md:mb-6">4. Payment Verification</h2>
+            <div className="bg-[#0a0a0a] border border-[#222] rounded-xl p-4 md:p-6 mb-6">
+              <h3 className="text-primary font-bold text-base md:text-lg mb-2">Total Amount: ₹{price.toLocaleString('en-IN')}</h3>
+              <p className="text-gray-400 text-sm mb-6">Complete your payment securely via UPI. Once done, upload the transaction screenshot below for verification.</p>
 
               <div className="grid md:grid-cols-2 gap-6 items-center">
                 <div className="bg-white p-4 rounded-xl flex items-center justify-center">
@@ -400,12 +400,12 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                 <div className="space-y-4">
                   <a
                     href={`upi://pay?pa=allensamuel913@oksbi&pn=InnoAivators%20Tech&mc=0000&tn=Bootcamp%20Registration&am=${price}.00&cu=INR`}
-                    className="flex items-center justify-center gap-3 w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-sm"
+                    className="flex items-center justify-center gap-3 w-full bg-white text-black py-3 md:py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-xs md:text-sm"
                   >
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" className="h-4" />
                     Pay via UPI App
                   </a>
-                  <p className="text-[10px] text-gray-500 font-mono text-center uppercase tracking-widest leading-relaxed">
+                  <p className="text-[9px] md:text-[10px] text-gray-500 font-mono text-center uppercase tracking-widest leading-relaxed">
                     Supported: GPay, PhonePe, Paytm, etc.
                   </p>
                 </div>
@@ -437,7 +437,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-bold text-white mb-1 uppercase tracking-wider">Tap to Select Screenshot</p>
-                      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest text-red-500 font-bold">Max Size: 100KB</p>
+                      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest text-red-500 font-bold">Max Size: 500KB</p>
                     </div>
                   </>
                 )}
@@ -458,17 +458,17 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
           </div>
         )}
 
-        <div className="flex justify-between mt-12">
-          {step > 1 ? (
-            <button type="button" onClick={handlePrev} className="px-6 py-3 border border-[#333] rounded-xl text-gray-400 hover:text-white hover:border-white transition-colors uppercase text-sm font-bold tracking-widest">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8 md:mt-12">
+          {step > 1 && (
+            <button type="button" onClick={handlePrev} className="px-6 py-3 border border-[#333] rounded-xl text-gray-400 hover:text-white hover:border-white transition-colors uppercase text-sm font-bold tracking-widest w-full sm:w-auto">
               Back
             </button>
-          ) : <div></div>}
+          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-3 bg-white text-black rounded-xl hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all uppercase text-sm font-bold tracking-widest disabled:opacity-50 flex items-center gap-2"
+            className={`px-8 py-3 bg-white text-black rounded-xl hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all uppercase text-sm font-bold tracking-widest disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto ${step === 1 ? 'ml-auto' : ''}`}
           >
             {loading ? 'Processing...' : step === 4 ? 'Submit Registration' : 'Next Step'}
             {!loading && step < 4 && <span>→</span>}

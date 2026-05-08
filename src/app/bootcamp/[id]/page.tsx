@@ -15,7 +15,7 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-24 relative overflow-hidden bg-black">
+    <div className="min-h-screen p-4 md:p-24 relative overflow-hidden bg-black">
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white/5 to-transparent pointer-events-none"></div>
@@ -25,7 +25,7 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
           ← Back to Catalog
         </Link>
 
-        <h1 className="text-4xl md:text-7xl font-black uppercase tracking-tighter mb-6 text-white leading-none">
+        <h1 className="text-3xl md:text-7xl font-black uppercase tracking-tighter mb-6 text-white leading-tight md:leading-none">
           {bootcamp.title}
         </h1>
 
@@ -42,22 +42,22 @@ export default async function BootcampDetails(props: { params: Promise<{ id: str
           )}
         </div>
 
-        <div className="bg-[#050505] border border-white/10 p-8 md:p-16 mb-8 relative group">
+        <div className="bg-[#050505] border border-white/10 p-6 md:p-16 mb-8 relative group">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
           <div className="mb-6 relative z-10">
             <h2 className="text-xs uppercase tracking-[0.4em] font-black text-gray-500 mb-2">01. Overview</h2>
             <div className="h-px w-12 bg-white/20"></div>
           </div>
-          <p className="text-base md:text-lg text-gray-400 leading-relaxed relative z-10 text-justify font-medium">
+          <p className="text-sm md:text-lg text-gray-400 leading-relaxed relative z-10 text-justify font-medium">
             {bootcamp.description.replace(new RegExp(`${bootcamp.duration_days}\\s*Days`, 'gi'), '').trim()}
           </p>
         </div>
 
         {bootcamp.final_task && (
-          <div className="bg-white p-8 md:p-16 mb-12 relative overflow-hidden">
+          <div className="bg-white p-6 md:p-16 mb-12 relative overflow-hidden">
             <div className="relative z-10">
               <h2 className="text-xs uppercase tracking-[0.4em] font-black text-gray-500 mb-6">02. The Challenge</h2>
-              <p className="text-xl md:text-3xl text-black font-black uppercase tracking-tighter leading-tight italic">
+              <p className="text-lg md:text-3xl text-black font-black uppercase tracking-tighter leading-tight italic">
                 "{bootcamp.final_task}"
               </p>
             </div>

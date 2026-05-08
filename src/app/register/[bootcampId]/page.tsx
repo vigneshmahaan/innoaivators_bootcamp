@@ -53,7 +53,7 @@ export default function Register({ params }: { params: Promise<{ bootcampId: str
   return (
     <div className="min-h-screen flex flex-col bg-gray-950 text-white">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center p-6 py-12">
+      <main className="flex-1 flex items-center justify-center p-4 py-8 md:p-6 md:py-12">
         <Card className="w-full max-w-lg">
           {loading ? (
             <div className="text-center py-8 animate-pulse">Loading course details...</div>

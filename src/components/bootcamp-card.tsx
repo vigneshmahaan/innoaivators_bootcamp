@@ -9,7 +9,7 @@ interface BootcampCardProps {
 
 export function BootcampCard({ id, title, description, price }: BootcampCardProps) {
   return (
-    <div className="bg-[#050505] border border-white/10 hover:border-white transition-all duration-700 p-8 relative group overflow-hidden flex flex-col h-full">
+    <div className="bg-[#050505] border border-white/10 hover:border-white transition-all duration-700 p-6 md:p-8 relative group overflow-hidden flex flex-col h-full">
       <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
       
       <div className="relative z-10 flex flex-col h-full">
