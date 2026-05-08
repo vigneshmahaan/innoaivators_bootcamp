@@ -23,13 +23,13 @@ export function Navbar() {
     <>
       <nav className="sticky top-0 z-[100] w-full backdrop-blur-xl bg-black/80 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 md:h-24 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="https://innoaivators.com" target="_blank" className="flex items-center gap-3 group">
             <div className="relative w-10 h-10 md:w-12 md:h-12 overflow-hidden rounded-lg">
-              <Image 
-                src="/logo.png" 
-                alt="InnoAivators Logo" 
+              <Image
+                src="/logo.png"
+                alt="InnoAivators Logo"
                 fill
-                className="object-contain" 
+                className="object-contain"
               />
             </div>
             <span className="text-xl md:text-2xl font-black tracking-tighter uppercase text-white group-hover:text-gray-400 transition-colors">
@@ -47,7 +47,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             onClick={toggleMenu}
             className="md:hidden flex flex-col gap-1.5 p-2 focus:outline-none"
             aria-label="Toggle menu"
@@ -59,11 +59,11 @@ export function Navbar() {
       </nav>
 
       {/* NEW FULL-SCREEN MOBILE MENU UI */}
-      <div 
+      <div
         className={`fixed inset-0 z-[200] bg-black transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
       >
         {/* Close Button */}
-        <button 
+        <button
           onClick={toggleMenu}
           className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors"
         >
@@ -84,15 +84,15 @@ export function Navbar() {
           {/* Main Links */}
           <div className="flex flex-col gap-4">
             <p className="text-gray-600 font-mono text-[9px] uppercase tracking-[0.5em] mb-4">Navigation</p>
-            <a 
-              href="/#about" 
+            <a
+              href="/#about"
               onClick={toggleMenu}
               className="text-5xl font-black uppercase tracking-tighter text-white hover:text-gray-500 transition-colors"
             >
               About Us
             </a>
-            <a 
-              href="/#bootcamps" 
+            <a
+              href="/#bootcamps"
               onClick={toggleMenu}
               className="text-5xl font-black uppercase tracking-tighter text-white hover:text-gray-500 transition-colors"
             >
@@ -102,20 +102,20 @@ export function Navbar() {
 
           {/* Footer of Menu */}
           <div className="space-y-8">
-            <Link 
-              href="/#bootcamps" 
+            <Link
+              href="/#bootcamps"
               onClick={toggleMenu}
               className="block w-full py-5 bg-white text-black text-center font-black uppercase tracking-[0.3em] text-xs hover:bg-gray-200 transition-all rounded-none"
             >
               Register Now
             </Link>
-            
+
             <div className="pt-8 border-t border-white/10 grid grid-cols-1 gap-4">
-               <div>
-                 <p className="text-gray-600 font-mono text-[8px] uppercase tracking-[0.4em] mb-2">Inquiries</p>
-                 <a href="mailto:hello.innoaivators@gmail.com" className="text-white font-bold text-[10px] tracking-widest uppercase hover:text-gray-400">hello.innoaivators@gmail.com</a>
-               </div>
-               <p className="text-gray-700 font-mono text-[8px] uppercase tracking-[0.3em]">&copy; {new Date().getFullYear()} INNOAIVATORS TECH SOLUTION</p>
+              <div>
+                <p className="text-gray-600 font-mono text-[8px] uppercase tracking-[0.4em] mb-2">Inquiries</p>
+                <a href="mailto:hello.innoaivators@gmail.com" className="text-white font-bold text-[10px] tracking-widest uppercase hover:text-gray-400">hello.innoaivators@gmail.com</a>
+              </div>
+              <p className="text-gray-700 font-mono text-[8px] uppercase tracking-[0.3em]">&copy; {new Date().getFullYear()} INNOAIVATORS TECH SOLUTION</p>
             </div>
           </div>
         </div>
