@@ -44,7 +44,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      
+
       // 100KB Limit Check
       if (file.size > 100 * 1024) {
         setError('Image size must be under 100KB. Please compress your screenshot.');
@@ -98,7 +98,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
         const { data: { publicUrl } } = supabase.storage
           .from('payment-proofs')
           .getPublicUrl(filePath);
-        
+
         finalPaymentUrl = publicUrl;
       } else if (step === 4 && !formData.paymentProofUrl) {
         throw new Error('Please upload a payment screenshot.');
@@ -224,10 +224,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={labelClass}>Country <span className="text-red-500 ml-1">*</span></label>
-                <select 
-                  required 
-                  className={inputClass} 
-                  value={formData.country} 
+                <select
+                  required
+                  className={inputClass}
+                  value={formData.country}
                   onChange={e => setFormData({ ...formData, country: e.target.value, state: '', district: '' })}
                 >
                   <option value="">Select Country</option>
@@ -238,10 +238,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
               {formData.country === 'India' && (
                 <div>
                   <label className={labelClass}>State <span className="text-red-500 ml-1">*</span></label>
-                  <select 
-                    required 
-                    className={inputClass} 
-                    value={formData.state} 
+                  <select
+                    required
+                    className={inputClass}
+                    value={formData.state}
                     onChange={e => setFormData({ ...formData, state: e.target.value, district: '' })}
                   >
                     <option value="">Select State</option>
@@ -254,10 +254,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             {formData.state === 'Tamil Nadu' ? (
               <div>
                 <label className={labelClass}>District <span className="text-red-500 ml-1">*</span></label>
-                <select 
-                  required 
-                  className={inputClass} 
-                  value={formData.district} 
+                <select
+                  required
+                  className={inputClass}
+                  value={formData.district}
                   onChange={e => setFormData({ ...formData, district: e.target.value })}
                 >
                   <option value="">Select District</option>
@@ -285,10 +285,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={labelClass}>Field of Study <span className="text-red-500 ml-1">*</span></label>
-                <select 
-                  required 
-                  className={inputClass} 
-                  value={formData.fieldOfStudy} 
+                <select
+                  required
+                  className={inputClass}
+                  value={formData.fieldOfStudy}
                   onChange={e => setFormData({ ...formData, fieldOfStudy: e.target.value, educationDetails: '', department: '' })}
                 >
                   <option value="">Select Field</option>
@@ -299,10 +299,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
               {formData.fieldOfStudy && (
                 <div>
                   <label className={labelClass}>Degree / Course <span className="text-red-500 ml-1">*</span></label>
-                  <select 
-                    required 
-                    className={inputClass} 
-                    value={formData.educationDetails} 
+                  <select
+                    required
+                    className={inputClass}
+                    value={formData.educationDetails}
                     onChange={e => setFormData({ ...formData, educationDetails: e.target.value, department: '' })}
                   >
                     <option value="">Select Degree</option>
@@ -316,10 +316,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
               <div className="space-y-4">
                 <div>
                   <label className={labelClass}>Department / Branch <span className="text-red-500 ml-1">*</span></label>
-                  <select 
-                    required 
-                    className={inputClass} 
-                    value={formData.department} 
+                  <select
+                    required
+                    className={inputClass}
+                    value={formData.department}
                     onChange={e => setFormData({ ...formData, department: e.target.value })}
                   >
                     <option value="">Select Department</option>
@@ -330,13 +330,13 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                 {formData.department === 'Other' && (
                   <div className="animate-in fade-in slide-in-from-top-2">
                     <label className={labelClass}>Specify Your Department <span className="text-red-500 ml-1">*</span></label>
-                    <input 
-                      required 
-                      type="text" 
-                      className={inputClass} 
-                      value={customDepartment} 
-                      onChange={e => setCustomDepartment(e.target.value)} 
-                      placeholder="e.g., Aerospace Engineering" 
+                    <input
+                      required
+                      type="text"
+                      className={inputClass}
+                      value={customDepartment}
+                      onChange={e => setCustomDepartment(e.target.value)}
+                      placeholder="e.g., Aerospace Engineering"
                     />
                   </div>
                 )}
@@ -345,10 +345,10 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
 
             <div>
               <label className={labelClass}>Year of Study <span className="text-red-500 ml-1">*</span></label>
-              <select 
-                required 
-                className={inputClass} 
-                value={formData.yearOfStudy} 
+              <select
+                required
+                className={inputClass}
+                value={formData.yearOfStudy}
                 onChange={e => setFormData({ ...formData, yearOfStudy: e.target.value })}
               >
                 <option value="">Select Year</option>
@@ -389,17 +389,17 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                   <div className="text-black text-center">
                     <div className="font-black text-xs mb-2 uppercase tracking-tighter">Scan to Pay</div>
                     <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=7010396731@superyes%26pn=InnoAivators%20Tech%26mc=0000%26tn=Bootcamp%20Registration%26am=${price}.00%26cu=INR`}
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=allensamuel913@oksbi%26pn=InnoAivators%20Tech%26mc=0000%26tn=Bootcamp%20Registration%26am=${price}.00%26cu=INR`}
                       alt="UPI QR Code"
                       className="w-32 h-32 mx-auto"
                     />
-                    <div className="font-mono text-[10px] mt-2 font-bold opacity-50 uppercase">UPI ID: 7010396731@superyes</div>
+                    <div className="font-mono text-[10px] mt-2 font-bold opacity-50 uppercase">UPI ID: allensamuel913@oksbi</div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <a
-                    href={`upi://pay?pa=7010396731@superyes&pn=InnoAivators%20Tech&mc=0000&tn=Bootcamp%20Registration&am=${price}.00&cu=INR`}
+                    href={`upi://pay?pa=allensamuel913@oksbi&pn=InnoAivators%20Tech&mc=0000&tn=Bootcamp%20Registration&am=${price}.00&cu=INR`}
                     className="flex items-center justify-center gap-3 w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-sm"
                   >
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" className="h-4" />
@@ -414,16 +414,15 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
 
             <div className="space-y-4">
               <label className={labelClass}>Upload Payment Screenshot <span className="text-red-500 ml-1">*</span></label>
-              
-              <div 
-                className={`relative border-2 border-dashed rounded-2xl p-8 transition-all flex flex-col items-center justify-center gap-4 ${
-                  paymentPreview ? 'border-accent bg-accent/5' : 'border-[#333] hover:border-accent/50 bg-[#0a0a0a]'
-                }`}
+
+              <div
+                className={`relative border-2 border-dashed rounded-2xl p-8 transition-all flex flex-col items-center justify-center gap-4 ${paymentPreview ? 'border-accent bg-accent/5' : 'border-[#333] hover:border-accent/50 bg-[#0a0a0a]'
+                  }`}
               >
                 {paymentPreview ? (
                   <div className="relative w-full aspect-video md:aspect-square max-h-[300px] rounded-lg overflow-hidden group">
                     <img src={paymentPreview} alt="Payment Preview" className="w-full h-full object-contain" />
-                    <button 
+                    <button
                       type="button"
                       onClick={() => { setPaymentFile(null); setPaymentPreview(null); }}
                       className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -442,7 +441,7 @@ export function RegistrationForm({ bootcampId, price }: RegistrationFormProps) {
                     </div>
                   </>
                 )}
-                
+
                 <input
                   required={!paymentPreview}
                   type="file"
